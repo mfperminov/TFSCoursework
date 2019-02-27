@@ -3,4 +3,7 @@
     <color name="colorPrimary">#008577</color>
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="color_tab_activity">#c5af52</color>
+    <color name="color_tab_courses">#526d44</color>
+    <color name="color_tab_profile">#ff6c6c</color>
 </resources>

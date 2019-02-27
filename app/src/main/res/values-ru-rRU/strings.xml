@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TFS Курсовая</string>
+    <string name="activities">Мероприятия</string>
+    <string name="courses">Мои курсы</string>
+    <string name="profile">Профиль</string>
+    <string name="edit_button_caption">Редактировать</string>
+    <string name="patronymic">Отчество</string>
+    <string name="cancel">Отменить</string>
+    <string name="save">Сохранить</string>
+    <string name="first_name">Имя</string>
+    <string name="last_name">Фамилия</string>
+    <string name="last_name_error">Введите фамилию</string>
+    <string name="first_name_error">Введите имя</string>
+    <string name="patronymic_error">Введите отчество</string>
+    <string name="leave">Уйти</string>
+    <string name="stay">Остаться</string>
+    <string name="message_dialog_leave_edit_profile">Если уйти с экрана редактирования, изменения не сохраняться. Уйти?
+    </string>
+    <string name="edit_profile">Редактировать профиль</string>
+</resources>

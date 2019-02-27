@@ -1,3 +1,21 @@
 <resources>
     <string name="app_name">TFS Course Work</string>
+    <string name="activities">Activities</string>
+    <string name="courses">My courses</string>
+    <string name="profile">Profile</string>
+    <string name="edit_button_caption">Edit</string>
+    <string name="patronymic">Patronymic</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="first_name">First Name</string>
+    <string name="last_name">Last Name</string>
+    <string name="last_name_error">Last name cannot be empty</string>
+    <string name="first_name_error">First name cannot be empty</string>
+    <string name="patronymic_error">Patronymic cannot be empty</string>
+    <string name="leave">Leave</string>
+    <string name="stay">Stay</string>
+    <string name="message_dialog_leave_edit_profile">If you leave the editing screen, the changes are not saved.
+        Leave?
+    </string>
+    <string name="edit_profile">Edit profile</string>
 </resources>
