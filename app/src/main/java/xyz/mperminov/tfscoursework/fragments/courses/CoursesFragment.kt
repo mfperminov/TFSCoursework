@@ -19,7 +19,11 @@ class CoursesFragment : Fragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        (activity as ToolbarTitleSetter).setTitle(getString(R.string.courses))
         return inflater.inflate(R.layout.fragment_courses, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        (activity as ToolbarTitleSetter).setTitle(getString(R.string.courses))
+        super.onViewCreated(view, savedInstanceState)
     }
 }

@@ -18,4 +18,5 @@
         Leave?
     </string>
     <string name="edit_profile">Edit profile</string>
+    <string name="string_no_user">Please enter your name</string>
 </resources>

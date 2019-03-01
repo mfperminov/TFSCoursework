@@ -9,17 +9,16 @@ class TFSCourseWorkApp: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        getUserRepositoryInstance(applicationContext)
+        initUserRepositoryInstance(applicationContext)
     }
 
     companion object {
         var repository : UserRepository? = null
 
-        private fun getUserRepositoryInstance(context: Context): UserRepository {
+        private fun initUserRepositoryInstance(context: Context) {
             if (repository == null)
                 repository = SharedPrefUserRepository(context)
 
-            return repository!!
         }
     }
 

@@ -14,7 +14,6 @@ import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.fragments.courses.CoursesFragment
 import xyz.mperminov.tfscoursework.fragments.profile.ProfileFragment
-import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.repositories.UserRepository
 
 class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListener, ChildFragmentsAdder,
@@ -105,9 +104,17 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
 
     private fun getFragmentOnPosition(position: Int): Fragment {
         return when (position) {
+
             0 -> ActivitiesFragment.newInstance()
+
             1 -> CoursesFragment.newInstance()
-            2 -> ProfileFragment.newInstance(repository.getUser() ?: User("", "", ""))
+
+            2 -> if (repository.getUser() == null)
+                ProfileFragment.newInstance(
+                    null,
+                    getString(R.string.string_no_user)
+                ) else ProfileFragment.newInstance(repository.getUser(), null)
+
             else -> {
                 throw IllegalArgumentException("No fragment for position $position")
             }
