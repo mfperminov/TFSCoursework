@@ -19,4 +19,6 @@
     </string>
     <string name="edit_profile">Редактировать профиль</string>
     <string name="string_no_user">Пожалуйста введите ваше имя</string>
+    <string name="progress">Успеваемость</string>
+    <string name="details">Детали</string>
 </resources>
