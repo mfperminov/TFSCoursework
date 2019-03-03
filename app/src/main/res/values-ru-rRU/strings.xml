@@ -21,4 +21,12 @@
     <string name="string_no_user">Пожалуйста введите ваше имя</string>
     <string name="progress">Успеваемость</string>
     <string name="details">Детали</string>
+    <string name="rating">Рейтинг</string>
+    <string name="overall_rating">Общий рейтинг</string>
+    <string name="homework_done">Выполнено домашек</string>
+    <string name="tests_completed">Пройдено тестов</string>
+    <string name="classes_passed_caption">Прошло</string>
+    <string name="classes_left_caption">Осталось</string>
+    <string name="points_caption">балла</string>
+    <string name="classes_count">%d занятий</string>
 </resources>
