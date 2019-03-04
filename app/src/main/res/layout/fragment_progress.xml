@@ -10,46 +10,62 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/caption_rating"
-            style="@style/TextAppearance.AppCompat.Caption"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/rating_header_layout"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/progress"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"
+            android:orientation="horizontal"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            style="@style/TextAppearance.AppCompat.Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:text="@string/details"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="@id/caption_rating"
-            app:layout_constraintEnd_toEndOf="@+id/horizontalScrollView"
-            app:layout_constraintTop_toTopOf="parent" />
+            <TextView
+                android:id="@+id/caption_rating"
+                style="@style/TextAppearance.AppCompat.Caption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/progress"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/caption_details"
+                style="@style/TextAppearance.MaterialComponents.Tab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="end"
+                android:text="@string/details"
+                android:textSize="16sp" />
+        </LinearLayout>
 
         <HorizontalScrollView
             android:id="@+id/horizontalScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/caption_rating">
+            app:layout_constraintTop_toBottomOf="@+id/rating_header_layout">
 
 
             <LinearLayout
+                android:id="@+id/profiles_container"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
@@ -61,10 +77,16 @@
                     android:minWidth="64dp"
                     android:orientation="vertical">
 
+                    <xyz.mperminov.tfscoursework.utils.views.BadgeView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="45"
+                        android:textColor="#ffffff" />
+
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/circle"/>
+                        android:src="@drawable/circle" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -79,10 +101,16 @@
                     android:minWidth="64dp"
                     android:orientation="vertical">
 
+                    <xyz.mperminov.tfscoursework.utils.views.BadgeView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="45"
+                        android:textColor="#ffffff" />
+
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/circle"/>
+                        android:src="@drawable/circle" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -96,10 +124,16 @@
                     android:layout_height="match_parent"
                     android:orientation="vertical">
 
+                    <xyz.mperminov.tfscoursework.utils.views.BadgeView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="45"
+                        android:textColor="#ffffff" />
+
                     <ImageView
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:src="@drawable/circle"/>
+                        android:src="@drawable/circle" />
 
                     <TextView
                         android:layout_width="wrap_content"
