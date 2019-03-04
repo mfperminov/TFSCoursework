@@ -30,4 +30,7 @@
     <string name="classes_left_caption">Left</string>
     <string name="points_caption">Points</string>
     <string name="classes_count">%d classes</string>
+    <string name="passed">Done</string>
+    <string name="not_passed">Undone</string>
+    <string name="passed_courses">Passed courses</string>
 </resources>

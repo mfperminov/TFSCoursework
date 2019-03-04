@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import xyz.mperminov.tfscoursework.R
 
 class ProgressFragment : Fragment() {
-    private var headerSelected = false
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_progress, container, false)
     }

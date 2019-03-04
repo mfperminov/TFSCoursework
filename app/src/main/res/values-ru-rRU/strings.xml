@@ -29,4 +29,7 @@
     <string name="classes_left_caption">Осталось</string>
     <string name="points_caption">балла</string>
     <string name="classes_count">%d занятий</string>
+    <string name="passed">Сдан</string>
+    <string name="not_passed">Не сдан</string>
+    <string name="passed_courses">Пройденные курсы</string>
 </resources>
