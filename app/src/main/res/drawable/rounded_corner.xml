@@ -9,5 +9,9 @@
         android:bottom="1dp"
         android:top="1dp" />
 
+    <stroke
+        android:width="2dp"
+        android:color="#fff" />
+
     <corners android:radius="5dp" />
 </shape>

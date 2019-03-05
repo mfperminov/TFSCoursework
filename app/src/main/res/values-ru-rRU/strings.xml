@@ -32,4 +32,5 @@
     <string name="passed">Сдан</string>
     <string name="not_passed">Не сдан</string>
     <string name="passed_courses">Пройденные курсы</string>
+    <string name="user">Пользователь</string>
 </resources>

@@ -3,4 +3,10 @@
     <declare-styleable name="CourseStateTextView">
         <attr name="background_color" format="color" />
     </declare-styleable>
+    <declare-styleable name="ProfileView">
+        <attr name="profile_color" format="color"/>
+        <attr name="badge" format="integer"/>
+        <attr name="profile_name" format="string"/>
+        <attr name="border_on" format="boolean"/>
+    </declare-styleable>
 </resources>

@@ -41,6 +41,7 @@ class CourseStateTextView : TextView {
     fun setColor(colorRes: Int) {
         val color = ContextCompat.getColor(context, colorRes)
         (this.background as GradientDrawable).setColor(color)
+        invalidate()
     }
 
 }

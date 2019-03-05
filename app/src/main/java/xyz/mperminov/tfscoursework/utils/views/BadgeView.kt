@@ -25,6 +25,6 @@ class BadgeView : TextView {
         val bg = context.getDrawable(R.drawable.rounded_corner) as GradientDrawable
         bg.cornerRadius = (textSize / 1.5).toFloat()
         background = bg
-        setPadding(10,5,10,5)
+        setPadding(20,5,20,5)
     }
 }

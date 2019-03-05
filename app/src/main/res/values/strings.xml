@@ -33,4 +33,5 @@
     <string name="passed">Done</string>
     <string name="not_passed">Undone</string>
     <string name="passed_courses">Passed courses</string>
+    <string name="user">User</string>
 </resources>
