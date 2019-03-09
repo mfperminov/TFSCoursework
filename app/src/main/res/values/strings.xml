@@ -19,4 +19,19 @@
     </string>
     <string name="edit_profile">Edit profile</string>
     <string name="string_no_user">Please enter your name</string>
+    <string name="progress">Progress</string>
+    <string name="details">Details</string>
+
+    <string name="rating">Rating</string>
+    <string name="overall_rating">Overall Rating</string>
+    <string name="homework_done">Homework done</string>
+    <string name="tests_completed">Tests completed</string>
+    <string name="classes_passed_caption">Passed</string>
+    <string name="classes_left_caption">Left</string>
+    <string name="points_caption">Points</string>
+    <string name="classes_count">%d classes</string>
+    <string name="passed">Done</string>
+    <string name="not_passed">Undone</string>
+    <string name="passed_courses">Passed courses</string>
+    <string name="user">User</string>
 </resources>

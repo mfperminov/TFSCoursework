@@ -4,9 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.fragment_courses.*
+import kotlinx.android.synthetic.main.fragment_progress.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
+import xyz.mperminov.tfscoursework.utils.views.ProfileView
 
 
 class CoursesFragment : Fragment() {
@@ -23,7 +27,17 @@ class CoursesFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        (activity as ToolbarTitleSetter).setTitle(getString(R.string.courses))
         super.onViewCreated(view, savedInstanceState)
+        (activity as ToolbarTitleSetter).setTitle(getString(R.string.courses))
+        swipe_layout.setOnRefreshListener {
+            for (i in 0 until profiles_container.childCount) {
+                val rand = (0..10).random()
+                (profiles_container[i] as ProfileView).setBadge(rand)
+            }
+
+            swipe_layout.isRefreshing = false
+
+        }
+
     }
 }
