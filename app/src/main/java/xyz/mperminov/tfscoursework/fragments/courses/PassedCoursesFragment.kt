@@ -52,7 +52,7 @@ class PassedCoursesAdapter : RecyclerView.Adapter<PassedCoursesAdapter.ViewHolde
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
         ViewHolder(
             LayoutInflater.from(parent.context).inflate(
-                xyz.mperminov.tfscoursework.R.layout.course_info_viewholder,
+                R.layout.course_info_viewholder,
                 parent,
                 false
             )

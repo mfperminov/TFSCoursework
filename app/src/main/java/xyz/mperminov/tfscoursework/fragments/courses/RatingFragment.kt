@@ -8,7 +8,6 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_rating.*
 import xyz.mperminov.tfscoursework.R
 
-
 class RatingFragment : Fragment() {
 
     override fun onCreateView(

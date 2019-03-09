@@ -18,7 +18,6 @@ class CoursesFragment : Fragment() {
         fun newInstance(): CoursesFragment {
             return CoursesFragment()
         }
-
         const val TAG = "COURSES_FRAGMENT"
     }
 
@@ -30,14 +29,12 @@ class CoursesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.courses))
         swipe_layout.setOnRefreshListener {
-            for (i in 0 until profiles_container.childCount) {
-                val rand = (0..10).random()
-                (profiles_container[i] as ProfileView).setBadge(rand)
-            }
-
+            val progressFragment = childFragmentManager.findFragmentById(R.id.progress_fragment) as? ProgressFragment
+            progressFragment?.apply { updateBadges() }
             swipe_layout.isRefreshing = false
-
         }
 
     }
+
+
 }
