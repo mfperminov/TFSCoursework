@@ -26,12 +26,13 @@ class ContactActivity : AppCompatActivity(), ContactFragment.ListCallbacks {
     private val PERMISSIONS_REQUEST_READ_CONTACTS = 4353
     private val contactRepository = TFSCourseWorkApp.contactsHolder
     lateinit var localBroadcastManager: LocalBroadcastManager
+
     private var reciever: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             if (intent.hasExtra(EXTRA_CONTACTS)) {
                 val contacts = intent.getParcelableArrayListExtra<Contact>(EXTRA_CONTACTS)
                 contactRepository.saveContacts(contacts)
-                supportFragmentManager.beginTransaction().addToBackStack(null)
+                supportFragmentManager.beginTransaction()
                     .add(
                         R.id.container,
                         ContactFragment.newInstance(contacts)
@@ -44,6 +45,7 @@ class ContactActivity : AppCompatActivity(), ContactFragment.ListCallbacks {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contact)
         supportActionBar?.title = getString(R.string.progress)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         localBroadcastManager = LocalBroadcastManager.getInstance(this)
         if (savedInstanceState == null)
             checkPermissions()

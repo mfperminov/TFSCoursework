@@ -33,4 +33,6 @@
     <string name="not_passed">Не сдан</string>
     <string name="passed_courses">Пройденные курсы</string>
     <string name="user">Пользователь</string>
+    <string name="points_count">%d баллов</string>
+    <string name="change_layout">Сменить отображение</string>
 </resources>

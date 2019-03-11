@@ -29,9 +29,11 @@
     <string name="classes_passed_caption">Passed</string>
     <string name="classes_left_caption">Left</string>
     <string name="points_caption">Points</string>
+    <string name="points_count">%d points</string>
     <string name="classes_count">%d classes</string>
     <string name="passed">Done</string>
     <string name="not_passed">Undone</string>
     <string name="passed_courses">Passed courses</string>
     <string name="user">User</string>
+    <string name="change_layout">Change layout</string>
 </resources>
