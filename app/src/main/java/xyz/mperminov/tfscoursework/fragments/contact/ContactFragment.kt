@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.models.Contact
+import androidx.recyclerview.widget.DividerItemDecoration
+
+
 
 
 class ContactFragment : Fragment() {
@@ -57,6 +60,8 @@ class ContactFragment : Fragment() {
                 .getSerializable(KEY_LAYOUT_MANAGER) as LayoutManagerType
         }
         rv.adapter = ContactAdapter(contacts)
+        val dividerItemDecoration = ContactItemDecoration(context!!)
+        rv.addItemDecoration(dividerItemDecoration)
         setRecyclerViewLayoutManager(currentLayoutManagerType)
         super.onViewCreated(view, savedInstanceState)
     }
