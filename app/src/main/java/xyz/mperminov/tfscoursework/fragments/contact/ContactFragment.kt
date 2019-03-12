@@ -3,6 +3,7 @@ package xyz.mperminov.tfscoursework.fragments.contact
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.GridLayoutManager
@@ -11,14 +12,13 @@ import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.models.Contact
-import androidx.recyclerview.widget.DividerItemDecoration
-
-
 
 
 class ContactFragment : Fragment() {
 
     private var contacts = mutableListOf<Contact>()
+    private val firstNames: Array<String> = arrayOf("Alexander", "Mikhail", "Ivan", "Tikhon")
+    private val lastNames: Array<String> = arrayOf("Ivanov", "Petrov", "Sidorov", "Martynov")
     private lateinit var currentLayoutManagerType: LayoutManagerType
 
     enum class LayoutManagerType { GRID_LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER }
@@ -58,6 +58,7 @@ class ContactFragment : Fragment() {
         if (savedInstanceState != null) {
             currentLayoutManagerType = savedInstanceState
                 .getSerializable(KEY_LAYOUT_MANAGER) as LayoutManagerType
+            contacts = savedInstanceState.getParcelableArrayList<Contact>(ARG_CONTACTS) as MutableList<Contact>
         }
         rv.adapter = ContactAdapter(contacts)
         val dividerItemDecoration = ContactItemDecoration(context!!)
@@ -67,9 +68,8 @@ class ContactFragment : Fragment() {
     }
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
-
-        // Save currently selected layout manager.
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, currentLayoutManagerType)
+        savedInstanceState.putParcelableArrayList(ARG_CONTACTS, contacts as ArrayList<Contact>)
         super.onSaveInstanceState(savedInstanceState)
     }
 
@@ -92,8 +92,31 @@ class ContactFragment : Fragment() {
                 else setRecyclerViewLayoutManager(LayoutManagerType.LINEAR_LAYOUT_MANAGER)
 
             }
+            R.id.add_contact -> addContact()
+            R.id.delete_contact -> deleteContact()
+            R.id.mix_contacts -> mixContacts()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun addContact() {
+        contacts.add(Contact(getRandomFirstName(), getRandomLastName()))
+        rv.adapter!!.notifyItemInserted(contacts.size - 1)
+    }
+
+    private fun getRandomFirstName(): String = firstNames.random()
+
+    private fun getRandomLastName(): String = lastNames.random()
+
+    private fun deleteContact() {
+        val positionToDelete = (0 until contacts.size).random()
+        contacts.removeAt(positionToDelete)
+        rv.adapter!!.notifyItemRemoved(positionToDelete)
+    }
+
+    private fun mixContacts() {
+        contacts.shuffle()
+        rv.adapter!!.notifyItemRangeChanged(0,contacts.size)
     }
 
     private fun setRecyclerViewLayoutManager(layoutManagerType: LayoutManagerType) {

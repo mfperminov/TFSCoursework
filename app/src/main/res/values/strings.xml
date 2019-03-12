@@ -36,4 +36,7 @@
     <string name="passed_courses">Passed courses</string>
     <string name="user">User</string>
     <string name="change_layout">Change layout</string>
+    <string name="add_contact">Add contact</string>
+    <string name="delete_contact">Delete contact</string>
+    <string name="mix_contact">Mix contacts</string>
 </resources>
