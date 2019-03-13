@@ -13,7 +13,6 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import xyz.mperminov.tfscoursework.R
-import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.contact.ContactFragment
 import xyz.mperminov.tfscoursework.models.Contact
 import xyz.mperminov.tfscoursework.services.BROADCAST_ACTION
@@ -24,14 +23,12 @@ import xyz.mperminov.tfscoursework.services.EXTRA_CONTACTS
 class ContactActivity : AppCompatActivity(), ContactFragment.OnUpSelectedHandler {
 
     private val PERMISSIONS_REQUEST_READ_CONTACTS = 4353
-    private val contactRepository = TFSCourseWorkApp.contactsHolder
     lateinit var localBroadcastManager: LocalBroadcastManager
 
     private var reciever: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent) {
             if (intent.hasExtra(EXTRA_CONTACTS)) {
                 val contacts = intent.getParcelableArrayListExtra<Contact>(EXTRA_CONTACTS)
-                contactRepository.saveContacts(contacts)
                 supportFragmentManager.beginTransaction()
                     .add(
                         R.id.container,
