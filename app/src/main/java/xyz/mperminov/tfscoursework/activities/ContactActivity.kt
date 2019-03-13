@@ -21,7 +21,7 @@ import xyz.mperminov.tfscoursework.services.ContactService
 import xyz.mperminov.tfscoursework.services.EXTRA_CONTACTS
 
 
-class ContactActivity : AppCompatActivity(), ContactFragment.ListCallbacks {
+class ContactActivity : AppCompatActivity(), ContactFragment.OnUpSelectedHandler {
 
     private val PERMISSIONS_REQUEST_READ_CONTACTS = 4353
     private val contactRepository = TFSCourseWorkApp.contactsHolder
@@ -99,15 +99,9 @@ class ContactActivity : AppCompatActivity(), ContactFragment.ListCallbacks {
         }
     }
 
-
-    //region ContactFragment.ListCallbacks implementation
-    override fun onItemAdded() {
-    }
-
-    override fun onItemRemoved() {
-    }
-
-    override fun onItemsMixed() {
+    //region ContactFragment.OnUpSelectedHandler impl
+    override fun onUpSelected() {
+        onBackPressed()
     }
     //endregion
 }

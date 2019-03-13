@@ -1,8 +1,10 @@
 package xyz.mperminov.tfscoursework.utils
 
+import android.content.Context
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
+import android.widget.Toast
 import com.google.android.material.textfield.TextInputLayout
 
 fun EditText.afterTextChanged(afterTextChanged: (String) -> Unit) {
@@ -23,3 +25,6 @@ fun EditText.validate(validator: (String) -> Boolean,textInputLayout: TextInputL
     }
     textInputLayout.error = if (validator(this.text.toString())) null else message
 }
+
+fun Context.toast(message: CharSequence) =
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()

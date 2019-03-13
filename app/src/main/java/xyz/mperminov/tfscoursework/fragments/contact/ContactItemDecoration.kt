@@ -31,10 +31,10 @@ class ContactItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
             val child = parent.getChildAt(i)
 
             c.drawRect(
-                child.left + child.translationX,
-                child.top + child.translationY,
-                child.right + child.translationX,
-                child.bottom + child.translationY,
+                child.left.toFloat(),
+                child.top.toFloat(),
+                child.right.toFloat(),
+                child.bottom.toFloat(),
                 paint
             )
 

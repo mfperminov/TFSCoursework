@@ -38,23 +38,28 @@ class ContactAdapter(
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(contacts[position])
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(contacts[position], position)
 
     override fun getItemCount(): Int = contacts.size
 
     inner class ViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
 
-        fun bind(contact: Contact) {
+        fun bind(contact: Contact, position: Int) {
             when (viewType) {
                 LIST_ITEM -> with(itemView) {
                     round_view.setInitials(contact.getInitials())
                     name.text = "${contact.firstName} ${contact.lastName}"
+                    if (position % 2 == 0) round_view.setColor(R.color.colorPrimary) else round_view.setColor(R.color.accent_material_dark)
                     points.text = context.getString(R.string.points_count, contact.points)
                 }
                 GRID_ITEM -> {
                     with(itemView) {
                         round_view_grid.setInitials(contact.getInitials())
                         name_grid.text = "${contact.firstName} ${contact.lastName}"
+                        if (position % 2 == 0) round_view_grid.setColor(R.color.colorPrimary) else round_view_grid.setColor(
+                            R.color.accent_material_dark
+                        )
+
                     }
                 }
             }

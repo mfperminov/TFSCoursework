@@ -39,4 +39,5 @@
     <string name="add_contact">Add contact</string>
     <string name="delete_contact">Delete contact</string>
     <string name="mix_contact">Mix contacts</string>
+    <string name="nothing_delete">Nothing to delete</string>
 </resources>

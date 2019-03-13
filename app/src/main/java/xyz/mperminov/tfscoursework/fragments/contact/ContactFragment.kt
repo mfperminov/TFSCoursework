@@ -3,15 +3,16 @@ package xyz.mperminov.tfscoursework.fragments.contact
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcelable
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.models.Contact
+import xyz.mperminov.tfscoursework.utils.toast
 
 
 class ContactFragment : Fragment() {
@@ -20,19 +21,20 @@ class ContactFragment : Fragment() {
     private val firstNames: Array<String> = arrayOf("Alexander", "Mikhail", "Ivan", "Tikhon")
     private val lastNames: Array<String> = arrayOf("Ivanov", "Petrov", "Sidorov", "Martynov")
     private lateinit var currentLayoutManagerType: LayoutManagerType
+    private var listener: OnUpSelectedHandler? = null
 
     enum class LayoutManagerType { GRID_LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER }
 
     private lateinit var layoutManager: RecyclerView.LayoutManager
 
-    private var listener: ListCallbacks? = null
+
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is ListCallbacks) {
+        if (context is OnUpSelectedHandler) {
             listener = context
         } else {
-            throw RuntimeException(context.toString() + " must implement ListCallbacks")
+            throw RuntimeException("$context must implement OnUpSelectedHandler")
         }
     }
 
@@ -63,6 +65,7 @@ class ContactFragment : Fragment() {
         rv.adapter = ContactAdapter(contacts)
         val dividerItemDecoration = ContactItemDecoration(context!!)
         rv.addItemDecoration(dividerItemDecoration)
+        rv.itemAnimator = ContactItemAnimator(context!!)
         setRecyclerViewLayoutManager(currentLayoutManagerType)
         super.onViewCreated(view, savedInstanceState)
     }
@@ -109,14 +112,21 @@ class ContactFragment : Fragment() {
     private fun getRandomLastName(): String = lastNames.random()
 
     private fun deleteContact() {
+        if (contacts.size == 0) {
+            context?.toast(getString(R.string.nothing_delete))
+            return
+        }
         val positionToDelete = (0 until contacts.size).random()
         contacts.removeAt(positionToDelete)
         rv.adapter!!.notifyItemRemoved(positionToDelete)
     }
 
     private fun mixContacts() {
+        val oldContacts = mutableListOf<Contact>()
+        oldContacts.addAll(contacts)
         contacts.shuffle()
-        rv.adapter!!.notifyItemRangeChanged(0,contacts.size)
+        val diffResult = DiffUtil.calculateDiff(ContactsDiffUtil(oldContacts, contacts))
+        diffResult.dispatchUpdatesTo(rv.adapter!!)
     }
 
     private fun setRecyclerViewLayoutManager(layoutManagerType: LayoutManagerType) {
@@ -153,16 +163,12 @@ class ContactFragment : Fragment() {
 
     }
 
-    interface ListCallbacks {
-
-        fun onItemAdded()
-
-        fun onItemRemoved()
-
-        fun onItemsMixed()
+    interface OnUpSelectedHandler {
+        fun onUpSelected()
     }
 
     companion object {
+
         private const val KEY_LAYOUT_MANAGER = "layoutManager"
 
         private const val SPAN_COUNT = 2
