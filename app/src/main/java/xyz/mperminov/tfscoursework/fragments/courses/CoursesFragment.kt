@@ -4,13 +4,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_courses.*
-import kotlinx.android.synthetic.main.fragment_progress.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
-import xyz.mperminov.tfscoursework.utils.views.ProfileView
 
 
 class CoursesFragment : Fragment() {
@@ -33,8 +30,5 @@ class CoursesFragment : Fragment() {
             progressFragment?.apply { updateBadges() }
             swipe_layout.isRefreshing = false
         }
-
     }
-
-
 }

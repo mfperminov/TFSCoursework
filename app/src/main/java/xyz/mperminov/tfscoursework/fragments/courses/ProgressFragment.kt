@@ -2,6 +2,8 @@ package xyz.mperminov.tfscoursework.fragments.courses
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,10 +31,33 @@ class ProgressFragment : Fragment() {
     }
 
     fun updateBadges() {
-        for (i in 0 until profiles_container.childCount) {
-            val rand = (0..10).random()
-            (profiles_container[i] as ProfileView).setBadge(rand)
-        }
+        BadgeUpdateThread(profiles_container.childCount).start()
     }
 
+    fun setBadge(badgeId: Int, value: Int) {
+        (profiles_container[badgeId] as ProfileView).setBadge(value)
+    }
+
+    inner class BadgeUpdateThread(private val profilesCount: Int) : Thread() {
+
+        private val SEND_RANDOM = 10
+
+        private val handler = Handler(
+            Looper.getMainLooper(),
+            Handler.Callback { msg ->
+                if (msg.what == SEND_RANDOM) this@ProgressFragment.setBadge(
+                    msg.arg1,
+                    msg.arg2
+                ); true
+            })
+
+        override fun run() {
+            for (i in 0 until profilesCount) {
+                val rand = (0..10).random()
+                val message = handler.obtainMessage(SEND_RANDOM, i, rand)
+                handler.sendMessage(message)
+            }
+        }
+    }
 }
+
