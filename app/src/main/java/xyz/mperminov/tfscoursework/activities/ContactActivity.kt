@@ -67,13 +67,11 @@ class ContactActivity : AppCompatActivity(), ContactFragment.OnUpSelectedHandler
         super.onPause()
     }
 
-    private fun hasNoPermissionsToReadContacts(): Boolean {
-        return (ContextCompat.checkSelfPermission(
-            this,
-            Manifest.permission.READ_CONTACTS
-        )
-                != PackageManager.PERMISSION_GRANTED)
-    }
+    private fun hasNoPermissionsToReadContacts(): Boolean = ContextCompat.checkSelfPermission(
+        this,
+        Manifest.permission.READ_CONTACTS
+    ) != PackageManager.PERMISSION_GRANTED
+
 
     private fun requestPermissionsToReadContacts() {
         ActivityCompat.requestPermissions(
