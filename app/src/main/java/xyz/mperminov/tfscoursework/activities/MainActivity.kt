@@ -14,12 +14,12 @@ import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.fragments.courses.CoursesFragment
 import xyz.mperminov.tfscoursework.fragments.profile.ProfileFragment
-import xyz.mperminov.tfscoursework.repositories.UserRepository
+import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 
 class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListener, ChildFragmentsAdder,
     ToolbarTitleSetter {
 
-    private val repository: UserRepository = TFSCourseWorkApp.repository!!
+    private val repository: UserRepository = TFSCourseWorkApp.repository
 
     //region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {

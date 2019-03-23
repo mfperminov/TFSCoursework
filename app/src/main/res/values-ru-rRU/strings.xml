@@ -33,4 +33,10 @@
     <string name="not_passed">Не сдан</string>
     <string name="passed_courses">Пройденные курсы</string>
     <string name="user">Пользователь</string>
+    <string name="points_count">%d баллов</string>
+    <string name="change_layout">Сменить отображение</string>
+    <string name="add_contact">Добавить контакт</string>
+    <string name="delete_contact">Удалить контакт</string>
+    <string name="mix_contact">Перемешать контакты</string>
+    <string name="nothing_delete">Нечего удалять</string>
 </resources>

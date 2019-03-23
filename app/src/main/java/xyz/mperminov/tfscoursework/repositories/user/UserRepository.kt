@@ -1,4 +1,4 @@
-package xyz.mperminov.tfscoursework.repositories
+package xyz.mperminov.tfscoursework.repositories.user
 
 import xyz.mperminov.tfscoursework.models.User
 

@@ -14,12 +14,12 @@ import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.models.User
-import xyz.mperminov.tfscoursework.repositories.UserRepository
+import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 import xyz.mperminov.tfscoursework.utils.afterTextChanged
 import xyz.mperminov.tfscoursework.utils.validate
 
 class EditProfileFragment : BaseChildFragment() {
-    private val repository: UserRepository = TFSCourseWorkApp.repository!!
+    private val repository: UserRepository = TFSCourseWorkApp.repository
     private var hasChanges = false
 
     private lateinit var user: User

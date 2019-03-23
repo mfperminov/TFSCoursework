@@ -2,8 +2,8 @@ package xyz.mperminov.tfscoursework
 
 import android.app.Application
 import android.content.Context
-import xyz.mperminov.tfscoursework.repositories.SharedPrefUserRepository
-import xyz.mperminov.tfscoursework.repositories.UserRepository
+import xyz.mperminov.tfscoursework.repositories.user.SharedPrefUserRepository
+import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 
 class TFSCourseWorkApp: Application() {
 
@@ -13,10 +13,9 @@ class TFSCourseWorkApp: Application() {
     }
 
     companion object {
-        var repository : UserRepository? = null
+        lateinit var repository : UserRepository
 
         private fun initUserRepositoryInstance(context: Context) {
-            if (repository == null)
                 repository = SharedPrefUserRepository(context)
 
         }
