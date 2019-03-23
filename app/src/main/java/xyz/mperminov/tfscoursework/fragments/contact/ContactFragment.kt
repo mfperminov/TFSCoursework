@@ -26,8 +26,7 @@ class ContactFragment : Fragment() {
     enum class LayoutManagerType { GRID_LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER }
 
     private lateinit var layoutManager: RecyclerView.LayoutManager
-
-
+    private lateinit var layoutAdapter: RecyclerView.Adapter<ContactAdapter.ViewHolder>
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -41,7 +40,7 @@ class ContactFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            contacts = (it.getParcelableArrayList<Contact>(ARG_CONTACTS) as List<Contact>).toMutableList()
+            contacts = it.getParcelableArrayList<Contact>(ARG_CONTACTS).orEmpty().toMutableList()
         }
         setHasOptionsMenu(true)
     }
@@ -62,7 +61,8 @@ class ContactFragment : Fragment() {
                 .getSerializable(KEY_LAYOUT_MANAGER) as LayoutManagerType
             contacts = savedInstanceState.getParcelableArrayList<Contact>(ARG_CONTACTS) as MutableList<Contact>
         }
-        rv.adapter = ContactAdapter(contacts)
+        layoutAdapter = ContactAdapter(contacts)
+        rv.adapter = layoutAdapter
         val dividerItemDecoration = ContactItemDecoration(context!!)
         rv.addItemDecoration(dividerItemDecoration)
         rv.itemAnimator = ContactItemAnimator(context!!)
@@ -104,7 +104,7 @@ class ContactFragment : Fragment() {
 
     private fun addContact() {
         contacts.add(Contact(getRandomFirstName(), getRandomLastName()))
-        rv.adapter!!.notifyItemInserted(contacts.size - 1)
+        layoutAdapter.notifyItemInserted(contacts.size - 1)
     }
 
     private fun getRandomFirstName(): String = firstNames.random()
@@ -118,7 +118,7 @@ class ContactFragment : Fragment() {
         }
         val positionToDelete = (0 until contacts.size).random()
         contacts.removeAt(positionToDelete)
-        rv.adapter!!.notifyItemRemoved(positionToDelete)
+        layoutAdapter.notifyItemRemoved(positionToDelete)
     }
 
     private fun mixContacts() {
@@ -126,7 +126,7 @@ class ContactFragment : Fragment() {
         oldContacts.addAll(contacts)
         contacts.shuffle()
         val diffResult = DiffUtil.calculateDiff(ContactsDiffUtil(oldContacts, contacts))
-        diffResult.dispatchUpdatesTo(rv.adapter!!)
+        diffResult.dispatchUpdatesTo(layoutAdapter)
     }
 
     private fun setRecyclerViewLayoutManager(layoutManagerType: LayoutManagerType) {

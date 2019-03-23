@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/change_layout"
+        android:icon="@drawable/ic_list"
+        android:title="@string/change_layout"
+        app:showAsAction="always" />
+    <item
+        android:id="@+id/add_contact"
+        android:icon="@drawable/ic_action_add"
+        android:title="@string/add_contact"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/delete_contact"
+        android:icon="@drawable/ic_delete"
+        android:title="@string/delete_contact"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/mix_contacts"
+        android:icon="@drawable/ic_swap_vert"
+        android:title="@string/mix_contact"
+        app:showAsAction="always" />
+
+</menu>

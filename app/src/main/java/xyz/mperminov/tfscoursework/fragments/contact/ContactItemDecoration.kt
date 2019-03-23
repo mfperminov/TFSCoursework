@@ -10,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import xyz.mperminov.tfscoursework.R
 
 class ContactItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+
     private val BORDER_WIDTH = 4
     private val rect: Rect = Rect(BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH)
     private val paint: Paint = Paint()
-
 
     init {
         paint.color = ContextCompat.getColor(context, R.color.color_item_decoration)
@@ -26,10 +26,8 @@ class ContactItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
     }
 
     override fun onDraw(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
-
         for (i in 0 until parent.childCount) {
             val child = parent.getChildAt(i)
-
             c.drawRect(
                 child.left.toFloat(),
                 child.top.toFloat(),
@@ -37,8 +35,6 @@ class ContactItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
                 child.bottom.toFloat(),
                 paint
             )
-
-
         }
     }
 }

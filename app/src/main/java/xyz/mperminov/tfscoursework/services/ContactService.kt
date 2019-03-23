@@ -39,22 +39,21 @@ class ContactService : IntentService("Contacts service") {
             arrayOf(ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE),
             ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME
         )
-        if (cursor != null) {
-            while (cursor.moveToNext()) {
-                val firstName = cursor.getString(
-                    cursor.getColumnIndex(
+        cursor?.use {
+            while (it.moveToNext()) {
+                val firstName = it.getString(
+                    it.getColumnIndex(
                         ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME
                     )
                 )
-                val lastName = cursor.getString(
-                    cursor.getColumnIndex(
+                val lastName = it.getString(
+                    it.getColumnIndex(
                         ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME
                     )
                 )
                 contacts.add(Contact(firstName ?: "", lastName ?: ""))
             }
         }
-        cursor?.close()
         return contacts
     }
 
