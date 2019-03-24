@@ -1,8 +1,9 @@
-package xyz.mperminov.tfscoursework.repositories.user
+package xyz.mperminov.tfscoursework.repositories.user.prefs
 
 import android.content.Context
 import android.preference.PreferenceManager
 import xyz.mperminov.tfscoursework.models.User
+import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 
 
 class SharedPrefUserRepository(private val context: Context) :
@@ -20,7 +21,7 @@ class SharedPrefUserRepository(private val context: Context) :
         val firstName = prefs.getString(USER_FNAME, null)
         val patronymic = prefs.getString(USER_PATRONYMIC, null)
         return if (lastName != null && firstName != null && patronymic != null)
-            User(lastName, firstName, patronymic)
+            User(lastName, firstName, patronymic, null)
         else null
     }
 

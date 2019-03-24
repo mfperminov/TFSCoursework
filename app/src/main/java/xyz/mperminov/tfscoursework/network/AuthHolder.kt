@@ -10,8 +10,10 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
 class AuthHolder(private val callback: Callback, private val prefsProvider: PrefsProvider) {
+    companion object {
+        val AUTH_TOKEN_ARG = "auth_token"
+    }
 
-    private val AUTH_TOKEN_ARG = "auth_token"
     private val cookiesRecInterceptor = HttpClient.cookiesRecInterceptor
     private val retrofit = Retrofit.Builder().baseUrl(Api.API_URL).client(HttpClient.okHttpClient)
         .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))

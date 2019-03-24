@@ -1,10 +1,10 @@
 package xyz.mperminov.tfscoursework.activities
 
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import android.widget.Toast
@@ -51,6 +51,6 @@ class LoginActivity : Activity(), AuthHolder.Callback, AuthHolder.PrefsProvider 
     }
 
     override fun getPreferences(): SharedPreferences {
-        return this.getPreferences(Context.MODE_PRIVATE)
+        return PreferenceManager.getDefaultSharedPreferences(this)
     }
 }
