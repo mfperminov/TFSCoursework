@@ -21,7 +21,7 @@ class NetworkRepository(private val tokenProvider: TokenProvider) :
     override fun getUser(): User? {
         Log.d("token", "${tokenProvider.getToken()}")
         return if (tokenProvider.getToken() == null) null
-        else api.getUser(tokenProvider.getToken() as String).blockingFirst().user
+        else api.getUser(tokenProvider.getToken() as String).onErrorReturn { _ -> UserSchema() }.blockingFirst().user
     }
 
     override fun saveUser(user: User) {

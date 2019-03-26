@@ -9,7 +9,8 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 
-class AuthHolder(private val callback: Callback, private val prefsProvider: PrefsProvider) {
+class AuthHolder(private val prefsProvider: PrefsProvider) {
+
     companion object {
         val AUTH_TOKEN_ARG = "auth_token"
     }
@@ -20,20 +21,18 @@ class AuthHolder(private val callback: Callback, private val prefsProvider: Pref
         .addConverterFactory(GsonConverterFactory.create()).build()
     private val api: Api = retrofit.create(Api::class.java)
 
-    fun saveToken() {
+    private fun saveToken() {
         Log.d("SavingToken", "${cookiesRecInterceptor.authCookie}")
         prefsProvider.getPreferences().edit().putString(AUTH_TOKEN_ARG, cookiesRecInterceptor.authCookie).apply()
     }
 
-    fun updateToken(email: String, password: String): Completable {
-        return api.updateToken(AuthRequest(email, password)).observeOn(AndroidSchedulers.mainThread())
-            .doOnComplete { saveToken(); callback.onAuthSuccess() }.doOnError { callback.onAuthFailure() }
+    fun getToken(): String? {
+        return prefsProvider.getPreferences().getString(AUTH_TOKEN_ARG, null)
     }
 
-    interface Callback {
-        fun onAuthSuccess()
-
-        fun onAuthFailure()
+    fun updateToken(email: String, password: String): Completable {
+        return api.updateToken(AuthRequest(email, password)).observeOn(AndroidSchedulers.mainThread())
+            .doOnComplete { saveToken() }
     }
 
     interface PrefsProvider {

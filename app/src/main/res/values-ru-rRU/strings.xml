@@ -44,4 +44,6 @@
     <string name="prompt_password">Пароль</string>
     <string name="action_sign_in">Войти</string>
     <string name="error_field_required">Заполните это поле</string>
+    <string name="error_no_info">Проблема с подключением к базе данных. Проверьте наличие Интернета и попробуйте снова</string>
+    <string name="auth_success">Вход выполнен</string>
 </resources>

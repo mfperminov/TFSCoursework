@@ -20,10 +20,9 @@ object HttpClient {
         OkHttpClient.Builder().addInterceptor(cookiesRecInterceptor)
             .addInterceptor(
                 setupLoggingInterceptor()
-            )
-            .callTimeout(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS)
-            .connectTimeout(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS)
-            .writeTimeout(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS)
-            .readTimeout(TIMEOUT_IN_SECONDS, TimeUnit.SECONDS)
+            ).addInterceptor { chain ->
+                TimeUnit.SECONDS.sleep(TIMEOUT_IN_SECONDS)
+                chain.proceed(chain.request())
+            }
             .build()
 }

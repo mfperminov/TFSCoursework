@@ -57,7 +57,7 @@ class ProfileFragment : Fragment(), NetworkRepository.TokenProvider {
             user_info.text = user.toString()
             if (user.avatar != null)
                 Picasso.get().load(Api.API_AVATAR_HOST + "${user.avatar}").into(avatar)
-        }
+        } else user_info.text = getString(R.string.error_no_info)
 
         btn_edit.setOnClickListener {
             val editProfileFragment = EditProfileFragment.newInstance(user ?: User("", "", "", null))
