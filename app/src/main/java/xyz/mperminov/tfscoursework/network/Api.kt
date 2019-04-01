@@ -6,6 +6,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.POST
+import xyz.mperminov.tfscoursework.repositories.homeworks.network.Lectures
 import xyz.mperminov.tfscoursework.repositories.user.network.UserSchema
 
 
@@ -20,4 +21,7 @@ interface Api {
 
     @GET("user")
     fun getUser(@Header("Cookie") sessionToken: String): Observable<UserSchema>
+
+    @GET("course/android_spring_2019/homeworks")
+    fun getLectures(@Header("Cookie") sessionToken: String): Observable<Lectures>
 }

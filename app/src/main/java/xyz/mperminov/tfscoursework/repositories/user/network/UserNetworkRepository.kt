@@ -10,7 +10,7 @@ import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.HttpClient
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 
-class NetworkRepository(private val tokenProvider: TokenProvider) :
+class UserNetworkRepository(private val tokenProvider: TokenProvider) :
     UserRepository {
 
     private val retrofit = Retrofit.Builder().baseUrl(Api.API_URL).client(HttpClient.okHttpClient)
