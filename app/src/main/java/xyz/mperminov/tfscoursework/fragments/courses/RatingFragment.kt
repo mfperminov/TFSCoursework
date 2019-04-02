@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_rating.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
-import xyz.mperminov.tfscoursework.fragments.courses.homeworks.HomeworksFragment
+import xyz.mperminov.tfscoursework.fragments.courses.lectures.HomeworksFragment
 
 class RatingFragment : Fragment() {
 

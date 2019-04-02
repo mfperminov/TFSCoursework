@@ -1,4 +1,4 @@
-package xyz.mperminov.tfscoursework.fragments.courses.homeworks
+package xyz.mperminov.tfscoursework.fragments.courses.lectures
 
 import android.view.LayoutInflater
 import android.view.View

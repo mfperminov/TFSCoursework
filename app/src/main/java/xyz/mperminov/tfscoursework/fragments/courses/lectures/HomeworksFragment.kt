@@ -1,9 +1,8 @@
-package xyz.mperminov.tfscoursework.fragments.courses.homeworks
+package xyz.mperminov.tfscoursework.fragments.courses.lectures
 
 import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,16 +16,18 @@ import kotlinx.android.synthetic.main.fragment_lectures.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
+import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
+import xyz.mperminov.tfscoursework.fragments.courses.tasks.TasksFragment
 import xyz.mperminov.tfscoursework.network.AuthHolder
-import xyz.mperminov.tfscoursework.repositories.homeworks.HomeworksRepository
-import xyz.mperminov.tfscoursework.repositories.homeworks.db.HomeworkDatabase
-import xyz.mperminov.tfscoursework.repositories.homeworks.db.LectureDao
-import xyz.mperminov.tfscoursework.repositories.homeworks.db.TasksDao
-import xyz.mperminov.tfscoursework.repositories.homeworks.network.HomeworksNetworkRepository
-import xyz.mperminov.tfscoursework.repositories.homeworks.network.Lecture
-import xyz.mperminov.tfscoursework.repositories.homeworks.network.Lectures
-import xyz.mperminov.tfscoursework.repositories.homeworks.network.Task
+import xyz.mperminov.tfscoursework.repositories.lectures.HomeworksRepository
+import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
+import xyz.mperminov.tfscoursework.repositories.lectures.db.LectureDao
+import xyz.mperminov.tfscoursework.repositories.lectures.db.TasksDao
+import xyz.mperminov.tfscoursework.repositories.lectures.network.HomeworksNetworkRepository
+import xyz.mperminov.tfscoursework.repositories.lectures.network.Lectures
+import xyz.mperminov.tfscoursework.repositories.lectures.network.Task
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
+import xyz.mperminov.tfscoursework.utils.toast
 
 class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider {
 
@@ -67,18 +68,20 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        (activity as ToolbarTitleSetter).setTitle(getString(R.string.lectures))
         layoutManager = LinearLayoutManager(context)
-        layoutAdapter = LectureAdapter { lectureId -> showTasksFromLecture(lectureId) }
+        layoutAdapter = LectureAdapter { lectureId -> goToTasksFragment(lectureId) }
         rv_lectures.adapter = layoutAdapter
         rv_lectures.layoutManager = layoutManager
+        swipe_layout.setOnRefreshListener { updateDb() }
         compositeDisposable.add(lectureDao.getCount().subscribeOn(Schedulers.io())
-            .subscribe { count -> if (count > 0) showLectures() else updateDb() })
+            .subscribe { count -> if (count > 0) showLectures() else fillDb() })
 
     }
 
-    private fun showTasksFromLecture(lectureId: Int) {
-        tasksDao.getHomeworkByLectureId(lectureId).subscribeOn(Schedulers.io())
-            .subscribe { it -> Log.d("tasks", it.joinToString()) }
+    private fun goToTasksFragment(lectureId: Int) {
+        childFragmentsAdder?.addChildOnTop(TasksFragment.newInstance(lectureId))
+
     }
 
     private fun showLectures() {
@@ -96,14 +99,30 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
         compositeDisposable.add(d)
     }
 
-    private fun updateDb() {
-        val d = repository.getLectures().observeOn(Schedulers.io()).doOnNext { saveCurrentLectures(it.lectures) }
+    private fun fillDb() {
+        val d = repository.getLectures().observeOn(Schedulers.io())
             .flatMapCompletable { lectures ->
                 database.lectureDao().insertAll(lectures.lectures)
                     .andThen(database.tasksDao().saveHomeworks(mapLecturesToTasks(lectures)))
-            }
-            .subscribe({ showLectures() }, { error -> Log.e("Error", error.localizedMessage) })
+            }.observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ showLectures() }, { error -> showError(error.localizedMessage) })
         compositeDisposable.add(d)
+    }
+
+    private fun updateDb() {
+        if (swipe_layout.isRefreshing) swipe_layout.isRefreshing = false
+        val d = repository.getLectures().observeOn(Schedulers.io())
+            .flatMapCompletable { lectures ->
+                database.lectureDao().updateLectures(lectures.lectures)
+                    .andThen(database.tasksDao().updateTasks(mapLecturesToTasks(lectures)))
+            }.observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ showLectures() }, { error -> showError(error.localizedMessage) })
+        compositeDisposable.add(d)
+    }
+
+    private fun showError(message: String?) {
+        if (message != null)
+            context?.toast(message)
     }
 
     private fun mapLecturesToTasks(lectures: Lectures): List<Task> {
@@ -111,15 +130,13 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
         lectures.lectures.forEach { lecture ->
             lecture.tasks.forEach { task -> tasks.add(Task(lecture.id, task.id, task.mark, task.status, task.task)) }
         }
-        Log.d("tasks", tasks.joinToString())
         return tasks.toList()
 
     }
 
-    private fun saveCurrentLectures(lectures: List<Lecture>) {
-    }
-
     override fun onDetach() {
+        compositeDisposable.dispose()
+        compositeDisposable.clear()
         childFragmentsAdder = null
         super.onDetach()
     }

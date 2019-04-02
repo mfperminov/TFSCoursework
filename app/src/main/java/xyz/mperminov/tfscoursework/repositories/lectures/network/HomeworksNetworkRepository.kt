@@ -1,4 +1,4 @@
-package xyz.mperminov.tfscoursework.repositories.homeworks.network
+package xyz.mperminov.tfscoursework.repositories.lectures.network
 
 import io.reactivex.Observable
 import io.reactivex.schedulers.Schedulers
@@ -7,7 +7,7 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.HttpClient
-import xyz.mperminov.tfscoursework.repositories.homeworks.HomeworksRepository
+import xyz.mperminov.tfscoursework.repositories.lectures.HomeworksRepository
 
 class HomeworksNetworkRepository(private val sessionToken: String) : HomeworksRepository {
     private val retrofit = Retrofit.Builder().baseUrl(Api.API_URL).client(HttpClient.okHttpClient)
