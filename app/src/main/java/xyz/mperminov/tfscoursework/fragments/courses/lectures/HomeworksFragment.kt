@@ -111,7 +111,7 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
 
     private fun updateDb() {
         if (swipe_layout.isRefreshing) swipe_layout.isRefreshing = false
-        val d = repository.getLectures().observeOn(Schedulers.io())
+        val d = repository.getLectures().take(1).observeOn(Schedulers.io())
             .flatMapCompletable { lectures ->
                 database.lectureDao().updateLectures(lectures.lectures)
                     .andThen(database.tasksDao().updateTasks(mapLecturesToTasks(lectures)))
