@@ -7,6 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.squareup.picasso.Picasso
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_profile.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
@@ -15,10 +17,11 @@ import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
+import xyz.mperminov.tfscoursework.utils.toast
 
 class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
     private var user: User? = null
-
+    private var userDisposable: Disposable? = null
     private val repository = UserNetworkRepository(this)
 
     companion object {
@@ -43,27 +46,35 @@ class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-//        if (arguments?.getParcelable<User>(EditProfileFragment.ARG_USER) != null) {
-//            user = arguments?.getParcelable(EditProfileFragment.ARG_USER) as User
-//        }
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.profile))
-//        user_info.text = if (user!=null) user.toString() else arguments?.getString(ARG_STRING_NO_USER)
-        val user = repository.getUser()
-        if (user != null) {
-            user_info.text = user.toString()
-            if (user.avatar != null)
-                Picasso.get().load(Api.API_AVATAR_HOST + "${user.avatar}").into(avatar)
-        } else user_info.text = getString(R.string.error_no_info)
-
+        userDisposable = repository.getUser().observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ user -> this.user = user; updateUi(user) }, { e -> showError(e.localizedMessage) })
         btn_edit.setOnClickListener {
             val editProfileFragment = EditProfileFragment.newInstance(user ?: User("", "", "", null))
             (activity as ChildFragmentsAdder).addChildOnTop(editProfileFragment)
         }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun showError(message: String) {
+        context?.toast(message)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        userDisposable?.dispose()
+    }
+
+    private fun updateUi(user: User) {
+        if (user != User.NOBODY) {
+            user_info.text = user.toString()
+            if (user.avatar != null)
+                Picasso.get().load(Api.API_AVATAR_HOST + "${user.avatar}").into(avatar)
+        } else user_info.text = getString(R.string.error_no_info)
     }
 
     override fun getToken(): String? {

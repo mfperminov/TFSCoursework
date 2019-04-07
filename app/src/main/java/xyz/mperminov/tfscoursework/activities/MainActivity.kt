@@ -1,10 +1,13 @@
 package xyz.mperminov.tfscoursework.activities
 
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
@@ -14,13 +17,14 @@ import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.fragments.courses.CoursesFragment
 import xyz.mperminov.tfscoursework.fragments.profile.ProfileFragment
+import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 
 class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListener, ChildFragmentsAdder,
     ToolbarTitleSetter {
-
     private val repository: UserRepository = TFSCourseWorkApp.repository
-
+    private var user: User? = null
+    private var userDisposable: Disposable? = null
     //region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,8 +35,8 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
             onTabSelected(0, false)
         }
     }
-    //endregion
 
+    //endregion
     private fun addItemsToBottomNav() {
         with(nav) {
             addItem(
@@ -57,6 +61,17 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
                 )
             )
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        userDisposable = repository.getUser().observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ user -> this.user = user }, { e -> Log.e(this.javaClass.simpleName, e.localizedMessage) })
+    }
+
+    override fun onStop() {
+        super.onStop()
+        userDisposable?.dispose()
     }
 
     override fun onTabSelected(position: Int, wasSelected: Boolean): Boolean {
@@ -99,27 +114,21 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
     override fun recreateParentFragment() {
         onTabSelected(nav.currentItem, false)
     }
+
     //endregion
-
-
     private fun getFragmentOnPosition(position: Int): Fragment {
         return when (position) {
-
             0 -> ActivitiesFragment.newInstance()
-
             1 -> CoursesFragment.newInstance()
-
-            2 -> if (repository.getUser() == null)
+            2 -> if (user == null)
                 ProfileFragment.newInstance(
                     null,
                     getString(R.string.string_no_user)
-                ) else ProfileFragment.newInstance(repository.getUser(), null)
-
+                ) else ProfileFragment.newInstance(user, null)
             else -> {
                 throw IllegalArgumentException("No fragment for position $position")
             }
         }
-
     }
 
     private fun getTagOnPosition(position: Int): String {
@@ -131,12 +140,10 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
                 throw IllegalArgumentException("No fragment for position $position")
             }
         }
-
     }
 
     override fun setTitle(title: String) {
         supportActionBar?.title = title
     }
-
 }
 

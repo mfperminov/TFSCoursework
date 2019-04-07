@@ -11,6 +11,10 @@ data class User(
     @SerializedName("middle_name") val patronymic: String,
     val avatar: String?
 ) : Parcelable {
+    companion object {
+        val NOBODY = User("", "", "", "")
+    }
+
     override fun toString(): String {
         return "$lastName $firstName $patronymic"
     }

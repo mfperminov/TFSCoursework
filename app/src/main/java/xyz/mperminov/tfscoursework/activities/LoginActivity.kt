@@ -9,7 +9,6 @@ import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.network.AuthHolder
@@ -37,7 +36,7 @@ class LoginActivity : Activity(), AuthHolder.PrefsProvider {
 
     private fun attemptLogin(email: String, password: String) {
         showProgress()
-        authDisposable = authHolder.updateToken(email, password).subscribeOn(Schedulers.io())
+        authDisposable = authHolder.updateToken(email, password)
             .subscribe({ onAuthSuccess() }, { t -> onAuthFailure(t.localizedMessage) })
     }
 

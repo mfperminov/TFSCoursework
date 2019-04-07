@@ -2,6 +2,7 @@ package xyz.mperminov.tfscoursework.repositories.user.prefs
 
 import android.content.Context
 import android.preference.PreferenceManager
+import io.reactivex.Single
 import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 
@@ -15,14 +16,14 @@ class SharedPrefUserRepository(private val context: Context) :
         const val USER_PATRONYMIC = "patronymic"
     }
 
-    override fun getUser(): User? {
+    override fun getUser(): Single<User> {
         val prefs = PreferenceManager.getDefaultSharedPreferences(context)
         val lastName = prefs.getString(USER_LNAME, null)
         val firstName = prefs.getString(USER_FNAME, null)
         val patronymic = prefs.getString(USER_PATRONYMIC, null)
         return if (lastName != null && firstName != null && patronymic != null)
-            User(lastName, firstName, patronymic, null)
-        else null
+            Single.just(User(lastName, firstName, patronymic, null))
+        else Single.just(User.NOBODY)
     }
 
     override fun saveUser(user: User) {
@@ -30,6 +31,6 @@ class SharedPrefUserRepository(private val context: Context) :
         editor.putString(USER_LNAME, user.lastName)
         editor.putString(USER_FNAME, user.firstName)
         editor.putString(USER_PATRONYMIC, user.patronymic)
-        editor.commit()
+        editor.apply()
     }
 }
