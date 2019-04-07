@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
     override fun onBackPressed() {
         if (supportFragmentManager.backStackEntryCount > 0) {
             val childFragment = supportFragmentManager.findFragmentByTag(getTagOnPosition(nav.currentItem))
-            if (childFragment != null && childFragment.isVisible && childFragment is BaseChildFragment) {
+            if (childFragment != null && childFragment.userVisibleHint && childFragment is BaseChildFragment) {
                 childFragment.handleBackPress()
                 return
             } else

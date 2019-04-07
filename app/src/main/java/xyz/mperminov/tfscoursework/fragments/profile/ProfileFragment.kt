@@ -14,12 +14,12 @@ import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.AuthHolder
-import xyz.mperminov.tfscoursework.repositories.user.network.NetworkRepository
+import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 
-class ProfileFragment : Fragment(), NetworkRepository.TokenProvider {
+class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
     private var user: User? = null
 
-    private val repository = NetworkRepository(this)
+    private val repository = UserNetworkRepository(this)
 
     companion object {
         private const val ARG_USER = "user"
