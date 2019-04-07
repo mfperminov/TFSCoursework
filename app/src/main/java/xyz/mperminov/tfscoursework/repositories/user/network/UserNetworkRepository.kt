@@ -12,11 +12,11 @@ class UserNetworkRepository(private val tokenProvider: TokenProvider) :
     private val api: Api = RestClient.api
     override fun getUser(): Single<User> {
         val token = tokenProvider.getToken()
-        if (token != null) {
+        return if (token != null) {
             Log.d("token", "$token")
-            return api.getUser(token).firstOrError().map { t: UserSchema -> t.user }
-        }
-        return Single.just(User.NOBODY)
+            api.getUser(token).firstOrError().map { t: UserSchema -> t.user }
+        } else
+            Single.just(User.NOBODY)
     }
 
     override fun saveUser(user: User) {
