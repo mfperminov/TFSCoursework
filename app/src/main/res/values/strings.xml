@@ -48,4 +48,7 @@
     <string name="error_field_required">This field is required</string>
     <string name="error_no_info">There is error with connection to database. No Internet?</string>
     <string name="auth_success">Auth success</string>
+    <string name="send_before">Send before</string>
+    <string name="lectures">Lectures</string>
+    <string name="tasks">Tasks</string>
 </resources>

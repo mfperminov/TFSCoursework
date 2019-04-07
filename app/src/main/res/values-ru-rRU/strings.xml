@@ -46,4 +46,7 @@
     <string name="error_field_required">Заполните это поле</string>
     <string name="error_no_info">Проблема с подключением к базе данных. Проверьте наличие Интернета и попробуйте снова</string>
     <string name="auth_success">Вход выполнен</string>
+    <string name="send_before">Сдать до</string>
+    <string name="lectures">Лекции</string>
+    <string name="tasks">Домашки</string>
 </resources>
