@@ -2,8 +2,8 @@ package xyz.mperminov.tfscoursework
 
 import android.app.Application
 import android.content.Context
-import xyz.mperminov.tfscoursework.repositories.user.SharedPrefUserRepository
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
+import xyz.mperminov.tfscoursework.repositories.user.prefs.SharedPrefUserRepository
 
 class TFSCourseWorkApp: Application() {
 

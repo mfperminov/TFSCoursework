@@ -1,19 +1,25 @@
 package xyz.mperminov.tfscoursework.fragments.profile
 
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.fragment_profile.*
-import kotlinx.android.synthetic.main.fragment_profile.view.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.models.User
+import xyz.mperminov.tfscoursework.network.Api
+import xyz.mperminov.tfscoursework.network.AuthHolder
+import xyz.mperminov.tfscoursework.repositories.user.network.NetworkRepository
 
-class ProfileFragment : Fragment() {
+class ProfileFragment : Fragment(), NetworkRepository.TokenProvider {
     private var user: User? = null
+
+    private val repository = NetworkRepository(this)
 
     companion object {
         private const val ARG_USER = "user"
@@ -37,19 +43,30 @@ class ProfileFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (arguments?.getParcelable<User>(EditProfileFragment.ARG_USER) != null) {
-            user = arguments?.getParcelable(EditProfileFragment.ARG_USER) as User
-        }
+//        if (arguments?.getParcelable<User>(EditProfileFragment.ARG_USER) != null) {
+//            user = arguments?.getParcelable(EditProfileFragment.ARG_USER) as User
+//        }
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.profile))
-        user_info.text = if (user!=null) user.toString() else arguments?.getString(ARG_STRING_NO_USER)
+//        user_info.text = if (user!=null) user.toString() else arguments?.getString(ARG_STRING_NO_USER)
+        val user = repository.getUser()
+        if (user != null) {
+            user_info.text = user.toString()
+            if (user.avatar != null)
+                Picasso.get().load(Api.API_AVATAR_HOST + "${user.avatar}").into(avatar)
+        } else user_info.text = getString(R.string.error_no_info)
+
         btn_edit.setOnClickListener {
-            val editProfileFragment = EditProfileFragment.newInstance(user ?: User("","",""))
+            val editProfileFragment = EditProfileFragment.newInstance(user ?: User("", "", "", null))
             (activity as ChildFragmentsAdder).addChildOnTop(editProfileFragment)
         }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    override fun getToken(): String? {
+        return PreferenceManager.getDefaultSharedPreferences(context).getString(AuthHolder.AUTH_TOKEN_ARG, null)
     }
 }

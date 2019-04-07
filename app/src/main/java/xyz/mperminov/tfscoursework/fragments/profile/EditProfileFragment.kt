@@ -62,7 +62,8 @@ class EditProfileFragment : BaseChildFragment() {
                 User(
                     lastName.text.toString().capitalize(),
                     firstName.text.toString().capitalize(),
-                    patronymic.text.toString().capitalize()
+                    patronymic.text.toString().capitalize(),
+                    null
                 )
             )
             (activity as ChildFragmentsAdder).recreateParentFragment()
