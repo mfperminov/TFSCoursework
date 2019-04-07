@@ -4,10 +4,6 @@ import android.content.SharedPreferences
 import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import retrofit2.Retrofit
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import retrofit2.converter.gson.GsonConverterFactory
 
 class AuthHolder(private val prefsProvider: PrefsProvider) {
 
@@ -16,10 +12,7 @@ class AuthHolder(private val prefsProvider: PrefsProvider) {
     }
 
     private val cookiesRecInterceptor = HttpClient.cookiesRecInterceptor
-    private val retrofit = Retrofit.Builder().baseUrl(Api.API_URL).client(HttpClient.okHttpClient)
-        .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-        .addConverterFactory(GsonConverterFactory.create()).build()
-    private val api: Api = retrofit.create(Api::class.java)
+    private val api: Api = RestClient.api
 
     private fun saveToken() {
         Log.d("SavingToken", "${cookiesRecInterceptor.authCookie}")
