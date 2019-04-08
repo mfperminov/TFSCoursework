@@ -51,8 +51,6 @@ class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.profile))
-        userDisposable = repository.getUser().observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ user -> this.user = user; updateUi(user) }, { e -> showError(e.localizedMessage) })
         btn_edit.setOnClickListener {
             val editProfileFragment = EditProfileFragment.newInstance(user ?: User("", "", "", null))
             (activity as ChildFragmentsAdder).addChildOnTop(editProfileFragment)
@@ -60,13 +58,19 @@ class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
         super.onViewCreated(view, savedInstanceState)
     }
 
-    private fun showError(message: String) {
-        context?.toast(message)
+    override fun onStart() {
+        userDisposable = repository.getUser().observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ user -> this.user = user; updateUi(user) }, { e -> showError(e.localizedMessage) })
+        super.onStart()
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
+    override fun onStop() {
         userDisposable?.dispose()
+        super.onStop()
+    }
+
+    private fun showError(message: String) {
+        context?.toast(message)
     }
 
     private fun updateUi(user: User) {
