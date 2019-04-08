@@ -141,6 +141,7 @@ class LecturesFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
     }
 
     override fun onStop() {
+        stopRefresh()
         disposables.clear()
         super.onStop()
     }
