@@ -17,20 +17,20 @@ class ProfileView : ConstraintLayout {
     private val BORDER_OPTIMAL_WIDTH = 6
 
     constructor(context: Context) : super(context) {
-        init(context, null, 0)
+        init(context, null)
     }
 
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        init(context, attrs, 0)
+        init(context, attrs)
     }
 
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {
-        init(context, attrs!!, defStyleAttr)
+        init(context, attrs!!)
     }
 
-    private fun init(context: Context, attrs: AttributeSet?, defStyleAttr: Int) {
+    private fun init(context: Context, attrs: AttributeSet?) {
         inflate(context, R.layout.profile_view, this)
         if (attrs != null) {
             val a = context.obtainStyledAttributes(attrs, R.styleable.ProfileView)

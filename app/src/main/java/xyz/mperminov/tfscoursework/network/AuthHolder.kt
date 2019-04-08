@@ -4,6 +4,7 @@ import android.content.SharedPreferences
 import android.util.Log
 import io.reactivex.Completable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import xyz.mperminov.tfscoursework.network.RestClient.apiLogin
 
 class AuthHolder(private val prefsProvider: PrefsProvider) {
 
@@ -24,7 +25,7 @@ class AuthHolder(private val prefsProvider: PrefsProvider) {
     }
 
     fun updateToken(email: String, password: String): Completable {
-        return api.updateToken(AuthRequest(email, password)).observeOn(AndroidSchedulers.mainThread())
+        return apiLogin.updateToken(AuthRequest(email, password)).observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { saveToken() }
     }
 

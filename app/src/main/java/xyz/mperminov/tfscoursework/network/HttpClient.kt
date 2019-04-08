@@ -15,8 +15,17 @@ object HttpClient {
 
     private val TIMEOUT_IN_SECONDS: Long = 2
     val cookiesRecInterceptor = CookiesRecInterceptor()
-    val okHttpClient: OkHttpClient =
+    val okHttpClientLogin: OkHttpClient =
         OkHttpClient.Builder().addInterceptor(cookiesRecInterceptor)
+            .addInterceptor(
+                setupLoggingInterceptor()
+            )
+            .addInterceptor { chain ->
+                TimeUnit.SECONDS.sleep(TIMEOUT_IN_SECONDS)
+                chain.proceed(chain.request())
+            }.build()
+    val okHttpClientDefault: OkHttpClient =
+        OkHttpClient.Builder()
             .addInterceptor(
                 setupLoggingInterceptor()
             )
