@@ -49,4 +49,5 @@
     <string name="send_before">Сдать до</string>
     <string name="lectures">Лекции</string>
     <string name="tasks">Домашки</string>
+    <string name="error_no_user_auth">Нет залогиненного пользователя</string>
 </resources>

@@ -51,4 +51,5 @@
     <string name="send_before">Send before</string>
     <string name="lectures">Lectures</string>
     <string name="tasks">Tasks</string>
+    <string name="error_no_user_auth">No logged in user</string>
 </resources>
