@@ -8,19 +8,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import androidx.room.Room
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_lectures.*
 import xyz.mperminov.tfscoursework.R
+import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.fragments.courses.tasks.TasksFragment
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.HomeworksRepository
-import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import xyz.mperminov.tfscoursework.repositories.lectures.db.LectureDao
 import xyz.mperminov.tfscoursework.repositories.lectures.db.TasksDao
 import xyz.mperminov.tfscoursework.repositories.lectures.network.HomeworksNetworkRepository
@@ -37,25 +36,18 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
     }
 
     private val disposables = CompositeDisposable()
-    private lateinit var database: HomeworkDatabase
-    private lateinit var lectureDao: LectureDao
-    private lateinit var tasksDao: TasksDao
+    private val lectureDao: LectureDao = TFSCourseWorkApp.database.lectureDao()
+    private val tasksDao: TasksDao = TFSCourseWorkApp.database.tasksDao()
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var layoutAdapter: LectureAdapter
     private val repository: HomeworksRepository by lazy {
         HomeworksNetworkRepository(getToken()!!)
     }
     private var childFragmentsAdder: ChildFragmentsAdder? = null
+
     override fun onAttach(context: Context) {
         if (context is ChildFragmentsAdder) childFragmentsAdder = context else
             throw IllegalStateException("$context must implement ChildFragmentsAdder interface")
-        database = Room.databaseBuilder(
-            context.applicationContext,
-            HomeworkDatabase::class.java, "lectures.db"
-        )
-            .build()
-        lectureDao = database.lectureDao()
-        tasksDao = database.tasksDao()
         super.onAttach(context)
     }
 
@@ -102,8 +94,8 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
     private fun fillDb() {
         val d = repository.getLectures().observeOn(Schedulers.io())
             .flatMapCompletable { lectures ->
-                database.lectureDao().insertAll(lectures.lectures)
-                    .andThen(database.tasksDao().saveHomeworks(mapLecturesToTasks(lectures)))
+                lectureDao.insertAll(lectures.lectures)
+                    .andThen(tasksDao.saveHomeworks(mapLecturesToTasks(lectures)))
             }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({ showLectures() }, { error -> showError(error.localizedMessage) })
         disposables.add(d)
@@ -113,10 +105,10 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
         if (swipe_layout.isRefreshing) swipe_layout.isRefreshing = false
         val d = repository.getLectures().take(1).observeOn(Schedulers.io())
             .flatMapCompletable { lectures ->
-                database.lectureDao().deleteAll()
-                    .andThen(database.tasksDao().deleteAll())
-                    .andThen(database.lectureDao().insertAll(lectures.lectures))
-                    .andThen(database.tasksDao().saveHomeworks(mapLecturesToTasks(lectures)))
+                lectureDao.deleteAll()
+                    .andThen(tasksDao.deleteAll())
+                    .andThen(lectureDao.insertAll(lectures.lectures))
+                    .andThen(tasksDao.saveHomeworks(mapLecturesToTasks(lectures)))
             }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({ showLectures() }, { error -> showError(error.localizedMessage) })
         disposables.add(d)

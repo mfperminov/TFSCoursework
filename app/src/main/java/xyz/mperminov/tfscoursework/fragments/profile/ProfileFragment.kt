@@ -52,7 +52,7 @@ class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.profile))
         btn_edit.setOnClickListener {
-            val editProfileFragment = EditProfileFragment.newInstance(user ?: User("", "", "", null))
+            val editProfileFragment = EditProfileFragment.newInstance(user ?: User.NOBODY)
             (activity as ChildFragmentsAdder).addChildOnTop(editProfileFragment)
         }
         super.onViewCreated(view, savedInstanceState)
