@@ -7,7 +7,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.task_viewholder.view.*
 import xyz.mperminov.tfscoursework.R
-import xyz.mperminov.tfscoursework.repositories.lectures.network.Task
+import xyz.mperminov.tfscoursework.repositories.models.Task
 import java.util.*
 
 class TasksAdapter : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {

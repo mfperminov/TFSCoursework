@@ -1,4 +1,4 @@
-package xyz.mperminov.tfscoursework.repositories.lectures.network
+package xyz.mperminov.tfscoursework.repositories.models
 
 import androidx.room.*
 import com.google.gson.annotations.SerializedName

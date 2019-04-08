@@ -24,8 +24,8 @@ import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import xyz.mperminov.tfscoursework.repositories.lectures.db.LectureDao
 import xyz.mperminov.tfscoursework.repositories.lectures.db.TasksDao
 import xyz.mperminov.tfscoursework.repositories.lectures.network.HomeworksNetworkRepository
-import xyz.mperminov.tfscoursework.repositories.lectures.network.Lectures
-import xyz.mperminov.tfscoursework.repositories.lectures.network.Task
+import xyz.mperminov.tfscoursework.repositories.models.Lectures
+import xyz.mperminov.tfscoursework.repositories.models.Task
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.utils.toast
 
@@ -130,7 +130,17 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
     private fun mapLecturesToTasks(lectures: Lectures): List<Task> {
         val tasks = mutableListOf<Task>()
         lectures.lectures.forEach { lecture ->
-            lecture.tasks.forEach { task -> tasks.add(Task(lecture.id, task.id, task.mark, task.status, task.task)) }
+            lecture.tasks.forEach { task ->
+                tasks.add(
+                    Task(
+                        lecture.id,
+                        task.id,
+                        task.mark,
+                        task.status,
+                        task.task
+                    )
+                )
+            }
         }
         return tasks.toList()
     }

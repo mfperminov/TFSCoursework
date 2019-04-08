@@ -22,7 +22,6 @@ import xyz.mperminov.tfscoursework.repositories.lectures.db.TasksDao
 
 class TasksFragment : BaseChildFragment() {
     companion object {
-
         fun newInstance(lectureId: Int): TasksFragment {
             val args: Bundle = Bundle()
             args.putInt(ARG_LECTURE_ID, lectureId)
@@ -30,9 +29,7 @@ class TasksFragment : BaseChildFragment() {
             fragment.arguments = args
             return fragment
         }
-
         const val ARG_LECTURE_ID = "lectureId"
-
     }
 
     private lateinit var database: HomeworkDatabase

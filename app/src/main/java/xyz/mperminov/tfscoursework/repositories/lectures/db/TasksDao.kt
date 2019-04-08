@@ -6,7 +6,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Single
-import xyz.mperminov.tfscoursework.repositories.lectures.network.Task
+import xyz.mperminov.tfscoursework.repositories.models.Task
 
 @Dao
 interface TasksDao {

@@ -3,7 +3,7 @@ package xyz.mperminov.tfscoursework.network
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Header
-import xyz.mperminov.tfscoursework.repositories.lectures.network.Lectures
+import xyz.mperminov.tfscoursework.repositories.models.Lectures
 import xyz.mperminov.tfscoursework.repositories.user.network.UserSchema
 
 interface Api {

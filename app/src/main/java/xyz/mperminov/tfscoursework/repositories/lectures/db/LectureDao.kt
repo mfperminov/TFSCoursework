@@ -7,7 +7,7 @@ import androidx.room.Query
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Single
-import xyz.mperminov.tfscoursework.repositories.lectures.network.Lecture
+import xyz.mperminov.tfscoursework.repositories.models.Lecture
 
 @Dao
 interface LectureDao {
