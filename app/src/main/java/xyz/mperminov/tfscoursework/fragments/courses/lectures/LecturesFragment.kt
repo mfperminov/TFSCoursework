@@ -28,10 +28,10 @@ import xyz.mperminov.tfscoursework.repositories.models.Task
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.utils.toast
 
-class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider {
+class LecturesFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider {
     companion object {
-        fun newInstance(): HomeworksFragment {
-            return HomeworksFragment()
+        fun newInstance(): LecturesFragment {
+            return LecturesFragment()
         }
     }
 
@@ -44,7 +44,6 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
         HomeworksNetworkRepository(getToken()!!)
     }
     private var childFragmentsAdder: ChildFragmentsAdder? = null
-
     override fun onAttach(context: Context) {
         if (context is ChildFragmentsAdder) childFragmentsAdder = context else
             throw IllegalStateException("$context must implement ChildFragmentsAdder interface")
@@ -102,7 +101,6 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
     }
 
     private fun updateDb() {
-        if (swipe_layout.isRefreshing) swipe_layout.isRefreshing = false
         val d = repository.getLectures().take(1).observeOn(Schedulers.io())
             .flatMapCompletable { lectures ->
                 lectureDao.deleteAll()
@@ -110,8 +108,13 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
                     .andThen(lectureDao.insertAll(lectures.lectures))
                     .andThen(tasksDao.saveHomeworks(mapLecturesToTasks(lectures)))
             }.observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ showLectures() }, { error -> showError(error.localizedMessage) })
+            .subscribe({ stopRefresh(); showLectures() },
+                { error -> stopRefresh(); showError(error.localizedMessage) })
         disposables.add(d)
+    }
+
+    private fun stopRefresh() {
+        if (swipe_layout.isRefreshing) swipe_layout.isRefreshing = false
     }
 
     private fun showError(message: String?) {

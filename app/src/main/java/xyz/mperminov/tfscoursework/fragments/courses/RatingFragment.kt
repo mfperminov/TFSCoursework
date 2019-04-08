@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_rating.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
-import xyz.mperminov.tfscoursework.fragments.courses.lectures.HomeworksFragment
+import xyz.mperminov.tfscoursework.fragments.courses.lectures.LecturesFragment
 
 class RatingFragment : Fragment() {
 
@@ -31,7 +31,7 @@ class RatingFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setProgress(10, 20)
-        header_layout.setOnClickListener { childFragmentsAdder?.addChildOnTop(HomeworksFragment.newInstance()) }
+        header_layout.setOnClickListener { childFragmentsAdder?.addChildOnTop(LecturesFragment.newInstance()) }
         super.onViewCreated(view, savedInstanceState)
     }
 
