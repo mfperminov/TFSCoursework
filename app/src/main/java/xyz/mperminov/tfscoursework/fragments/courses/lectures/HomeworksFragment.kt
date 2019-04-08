@@ -30,25 +30,22 @@ import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkReposito
 import xyz.mperminov.tfscoursework.utils.toast
 
 class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider {
-
     companion object {
         fun newInstance(): HomeworksFragment {
             return HomeworksFragment()
         }
     }
 
-    private val compositeDisposable = CompositeDisposable()
+    private val disposables = CompositeDisposable()
     private lateinit var database: HomeworkDatabase
     private lateinit var lectureDao: LectureDao
     private lateinit var tasksDao: TasksDao
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var layoutAdapter: LectureAdapter
-
     private val repository: HomeworksRepository by lazy {
         HomeworksNetworkRepository(getToken()!!)
     }
     private var childFragmentsAdder: ChildFragmentsAdder? = null
-
     override fun onAttach(context: Context) {
         if (context is ChildFragmentsAdder) childFragmentsAdder = context else
             throw IllegalStateException("$context must implement ChildFragmentsAdder interface")
@@ -74,14 +71,17 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
         rv_lectures.adapter = layoutAdapter
         rv_lectures.layoutManager = layoutManager
         swipe_layout.setOnRefreshListener { updateDb() }
-        compositeDisposable.add(lectureDao.getCount().subscribeOn(Schedulers.io())
-            .subscribe { count -> if (count > 0) showLectures() else fillDb() })
+    }
 
+    override fun onStart() {
+        val d = lectureDao.getCount().subscribeOn(Schedulers.io())
+            .subscribe { count -> if (count > 0) showLectures() else fillDb() }
+        disposables.add(d)
+        super.onStart()
     }
 
     private fun goToTasksFragment(lectureId: Int) {
         childFragmentsAdder?.addChildOnTop(TasksFragment.newInstance(lectureId))
-
     }
 
     private fun showLectures() {
@@ -96,7 +96,7 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
             }.observeOn(AndroidSchedulers.mainThread()).subscribe {
                 layoutAdapter.swapData(it)
             }
-        compositeDisposable.add(d)
+        disposables.add(d)
     }
 
     private fun fillDb() {
@@ -106,18 +106,20 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
                     .andThen(database.tasksDao().saveHomeworks(mapLecturesToTasks(lectures)))
             }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({ showLectures() }, { error -> showError(error.localizedMessage) })
-        compositeDisposable.add(d)
+        disposables.add(d)
     }
 
     private fun updateDb() {
         if (swipe_layout.isRefreshing) swipe_layout.isRefreshing = false
         val d = repository.getLectures().take(1).observeOn(Schedulers.io())
             .flatMapCompletable { lectures ->
-                database.lectureDao().updateLectures(lectures.lectures)
-                    .andThen(database.tasksDao().updateTasks(mapLecturesToTasks(lectures)))
+                database.lectureDao().deleteAll()
+                    .andThen(database.tasksDao().deleteAll())
+                    .andThen(database.lectureDao().insertAll(lectures.lectures))
+                    .andThen(database.tasksDao().saveHomeworks(mapLecturesToTasks(lectures)))
             }.observeOn(AndroidSchedulers.mainThread())
             .subscribe({ showLectures() }, { error -> showError(error.localizedMessage) })
-        compositeDisposable.add(d)
+        disposables.add(d)
     }
 
     private fun showError(message: String?) {
@@ -131,12 +133,14 @@ class HomeworksFragment : BaseChildFragment(), UserNetworkRepository.TokenProvid
             lecture.tasks.forEach { task -> tasks.add(Task(lecture.id, task.id, task.mark, task.status, task.task)) }
         }
         return tasks.toList()
+    }
 
+    override fun onStop() {
+        disposables.clear()
+        super.onStop()
     }
 
     override fun onDetach() {
-        compositeDisposable.dispose()
-        compositeDisposable.clear()
         childFragmentsAdder = null
         super.onDetach()
     }
