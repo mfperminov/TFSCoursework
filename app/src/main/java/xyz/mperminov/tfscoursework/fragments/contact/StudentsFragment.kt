@@ -16,6 +16,7 @@ import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
+import xyz.mperminov.tfscoursework.repositories.students.db.Student
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.utils.toast
 import java.util.concurrent.TimeUnit
@@ -132,11 +133,20 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
                     setRecyclerViewLayoutManager(LayoutManagerType.GRID_LAYOUT_MANAGER)
                 else setRecyclerViewLayoutManager(LayoutManagerType.LINEAR_LAYOUT_MANAGER)
             }
-            R.id.add_contact -> addContact()
-            R.id.delete_contact -> deleteContact()
-            R.id.mix_contacts -> mixContacts()
+            R.id.sort_alpha -> sortStudentsAlphabetically()
+            R.id.sort_marks -> sortStudentsByMarks()
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun sortStudentsByMarks() {
+        (rv.adapter as StudentsAdapter).students = (rv.adapter as StudentsAdapter).students.sortedWith(
+            CompareStudents.Companion
+        )
+    }
+
+    private fun sortStudentsAlphabetically() {
+        (rv.adapter as StudentsAdapter).students = (rv.adapter as StudentsAdapter).students.sortedBy { it.name }
     }
 
     private fun addContact() {
@@ -203,5 +213,18 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
         private const val SPAN_COUNT = 2
         @JvmStatic
         fun newInstance() = StudentsFragment()
+    }
+}
+
+class CompareStudents {
+    companion object : Comparator<Student> {
+        override fun compare(a: Student, b: Student): Int {
+            return when {
+                a.mark > b.mark -> -1
+                b.mark > a.mark -> 1
+                a.name > b.name -> 1
+                else -> -1
+            }
+        }
     }
 }

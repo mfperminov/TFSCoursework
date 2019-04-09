@@ -52,4 +52,6 @@
     <string name="lectures">Lectures</string>
     <string name="tasks">Tasks</string>
     <string name="error_no_user_auth">No logged in user</string>
+    <string name="sort_alphabetically">Sort alphabetically</string>
+    <string name="sort_by_marks">Sort by marks</string>
 </resources>

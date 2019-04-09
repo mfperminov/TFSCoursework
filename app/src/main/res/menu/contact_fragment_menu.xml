@@ -7,19 +7,14 @@
         android:title="@string/change_layout"
         app:showAsAction="always" />
     <item
-        android:id="@+id/add_contact"
-        android:icon="@drawable/ic_action_add"
-        android:title="@string/add_contact"
+        android:id="@+id/sort_alpha"
+        android:icon="@drawable/ic_action_sort_2"
+        android:title="@string/sort_alphabetically"
         app:showAsAction="ifRoom" />
     <item
-        android:id="@+id/delete_contact"
-        android:icon="@drawable/ic_delete"
-        android:title="@string/delete_contact"
+        android:id="@+id/sort_marks"
+        android:icon="@drawable/ic_action_sort_1"
+        android:title="@string/sort_by_marks"
         app:showAsAction="ifRoom" />
-    <item
-        android:id="@+id/mix_contacts"
-        android:icon="@drawable/ic_swap_vert"
-        android:title="@string/mix_contact"
-        app:showAsAction="always" />
 
 </menu>

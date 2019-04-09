@@ -50,4 +50,6 @@
     <string name="lectures">Лекции</string>
     <string name="tasks">Домашки</string>
     <string name="error_no_user_auth">Нет залогиненного пользователя</string>
+    <string name="sort_alphabetically">Сортировать по алфавиту</string>
+    <string name="sort_by_marks">Сортировать по успеваемости</string>
 </resources>
