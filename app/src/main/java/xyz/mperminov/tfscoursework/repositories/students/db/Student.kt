@@ -1,6 +1,7 @@
 package xyz.mperminov.tfscoursework.repositories.students.db
 
 import xyz.mperminov.tfscoursework.repositories.students.network.StudentSchema
+import xyz.mperminov.tfscoursework.utils.round
 
 data class Student(val id: Int, val name: String, val mark: Double) {
     companion object {
@@ -9,17 +10,25 @@ data class Student(val id: Int, val name: String, val mark: Double) {
 }
 
 class StudentMapper {
+    private val MARK_ROUND_PRECISION = 2
     fun mapToDbModel(studentSchemas: List<StudentSchema>): List<Student> {
-        return if (studentSchemas[1].grades != null) {
-            studentSchemas[1].grades?.map { grade ->
-                if (grade.studentId != null && grade.student != null && !grade.grades.isNullOrEmpty() && grade.grades!!.last().mark != null)
-                    Student(
-                        grade.studentId!!,
-                        grade.student!!,
-                        grade.grades!!.last().mark!!
-                    )
-                else Student.NOBODY
-            }!!
-        } else emptyList()
+        val students = studentSchemas[1].grades?.filter { grade -> (grade.studentId != null && grade.student != null) }
+            ?.map { grade ->
+                val mark =
+                    if (!grade.grades.isNullOrEmpty() && grade.grades!!.last().mark != null) roundMarkWithPrecision(
+                        grade.grades!!.last().mark!!,
+                        MARK_ROUND_PRECISION
+                    ) else 0.0
+                Student(
+                    grade.studentId!!,
+                    grade.student!!,
+                    mark
+                )
+            }
+        return students ?: emptyList()
+    }
+
+    private fun roundMarkWithPrecision(rawMark: Double, precision: Int): Double {
+        return rawMark.round(precision)
     }
 }
