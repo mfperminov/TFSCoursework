@@ -26,7 +26,7 @@ class TFSCourseWorkApp : Application() {
                 context,
                 HomeworkDatabase::class.java, DATABASE_NAME
                 // понимаю, что этот метод удалит все данные при изменении версии
-                // не буду так делать впредь, настрою миграцию
+                // постараюсь так не делать впредь, настрою миграцию
             ).fallbackToDestructiveMigration()
                 .build()
         }

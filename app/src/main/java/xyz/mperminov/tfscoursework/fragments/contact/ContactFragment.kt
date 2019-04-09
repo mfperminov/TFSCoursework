@@ -16,12 +16,12 @@ import kotlinx.android.synthetic.main.fragment_contact_list.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.models.Contact
 import xyz.mperminov.tfscoursework.network.AuthHolder
-import xyz.mperminov.tfscoursework.network.RestClient
-import xyz.mperminov.tfscoursework.repositories.students.db.StudentMapper
+import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.utils.toast
+import java.util.concurrent.TimeUnit
 
-class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider {
+class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, StudentsRepository.UpdateTimeSaver {
     private var contacts = mutableListOf<Contact>()
     private val firstNames: Array<String> = arrayOf("Alexander", "Mikhail", "Ivan", "Tikhon")
     private val lastNames: Array<String> = arrayOf("Ivanov", "Petrov", "Sidorov", "Martynov")
@@ -30,8 +30,9 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider {
 
     enum class LayoutManagerType { GRID_LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER }
 
-    private val api = RestClient.api
+    private val studentsRepository = StudentsRepository(this, this)
     private var studentSchemaDisposable: Disposable? = null
+    private val ARG_TIME_UPDATE = "last_time_updated"
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var layoutAdapter: RecyclerView.Adapter<ContactAdapter.ViewHolder>
     override fun onAttach(context: Context) {
@@ -77,19 +78,16 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider {
     }
 
     override fun onStart() {
-        val token = getToken()
-        if (token != null)
-            studentSchemaDisposable =
-                api.getStudents(token).take(1).map { list -> StudentMapper().mapToDbModel(list) }
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                        { studentSchema ->
-                            Log.d("student schema", studentSchema.joinToString()); Log.d("students initials",
-                            studentSchema.joinToString { it.getInitials() })
-                        },
-                        { e -> Log.e("error", e.localizedMessage) })
-        else
-            showError(getString(R.string.error_no_user_auth))
+        studentSchemaDisposable =
+            studentsRepository.getStudents()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { studentSchema ->
+                        Log.d("student schema", studentSchema.joinToString()); Log.d("students initials",
+                        studentSchema.joinToString { it.getInitials() })
+                    },
+                    { e -> Log.e("error", e.localizedMessage) })
+
         super.onStart()
     }
 
@@ -196,6 +194,15 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider {
 
     interface OnUpSelectedHandler {
         fun onUpSelected()
+    }
+
+    override fun saveUpdateTime(timestamp: Long) {
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(ARG_TIME_UPDATE, timestamp).apply()
+    }
+
+    override fun getTimeDiffInSeconds(currentTime: Long): Long {
+        val lastTimeUpdate = PreferenceManager.getDefaultSharedPreferences(context).getLong(ARG_TIME_UPDATE, 0)
+        return TimeUnit.MILLISECONDS.toSeconds(currentTime - lastTimeUpdate)
     }
 
     companion object {
