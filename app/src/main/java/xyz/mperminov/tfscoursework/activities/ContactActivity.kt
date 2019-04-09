@@ -13,14 +13,13 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import xyz.mperminov.tfscoursework.R
-import xyz.mperminov.tfscoursework.fragments.contact.ContactFragment
+import xyz.mperminov.tfscoursework.fragments.contact.StudentsFragment
 import xyz.mperminov.tfscoursework.models.Contact
 import xyz.mperminov.tfscoursework.services.BROADCAST_ACTION
 import xyz.mperminov.tfscoursework.services.ContactService
 import xyz.mperminov.tfscoursework.services.EXTRA_CONTACTS
 
-
-class ContactActivity : AppCompatActivity(), ContactFragment.OnUpSelectedHandler {
+class ContactActivity : AppCompatActivity(), StudentsFragment.OnUpSelectedHandler {
 
     private val PERMISSIONS_REQUEST_READ_CONTACTS = 4353
     lateinit var localBroadcastManager: LocalBroadcastManager
@@ -32,7 +31,7 @@ class ContactActivity : AppCompatActivity(), ContactFragment.OnUpSelectedHandler
                 supportFragmentManager.beginTransaction()
                     .add(
                         R.id.container,
-                        ContactFragment.newInstance(contacts)
+                        StudentsFragment.newInstance()
                     ).commit()
             }
         }
@@ -94,7 +93,7 @@ class ContactActivity : AppCompatActivity(), ContactFragment.OnUpSelectedHandler
         }
     }
 
-    //region ContactFragment.OnUpSelectedHandler impl
+    //region StudentsFragment.OnUpSelectedHandler impl
     override fun onUpSelected() {
         onBackPressed()
     }

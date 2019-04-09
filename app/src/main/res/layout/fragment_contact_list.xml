@@ -9,5 +9,5 @@
     android:layout_marginRight="16dp"
     android:clipToPadding="false"
     android:paddingBottom="16dp"
-    tools:context=".fragments.contact.ContactFragment"
+    tools:context=".fragments.contact.StudentsFragment"
     tools:listitem="@layout/viewholder_contact" />

@@ -15,13 +15,14 @@ import xyz.mperminov.tfscoursework.fragments.activitites.ActivitiesFragment
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
+import xyz.mperminov.tfscoursework.fragments.contact.StudentsFragment
 import xyz.mperminov.tfscoursework.fragments.courses.CoursesFragment
 import xyz.mperminov.tfscoursework.fragments.profile.ProfileFragment
 import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 
 class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListener, ChildFragmentsAdder,
-    ToolbarTitleSetter {
+    ToolbarTitleSetter, StudentsFragment.OnUpSelectedHandler {
     private val repository: UserRepository = TFSCourseWorkApp.repository
     private var user: User? = null
     private var userDisposable: Disposable? = null
@@ -144,6 +145,10 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
 
     override fun setTitle(title: String) {
         supportActionBar?.title = title
+    }
+
+    override fun onUpSelected() {
+        onBackPressed()
     }
 }
 

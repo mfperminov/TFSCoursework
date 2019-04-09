@@ -30,7 +30,8 @@ class StudentsRepository(
 
     private fun fetchStudentsFromNetwork(): Single<List<Student>> {
         Log.i(TAG, "start network synchronization")
-        return networkRepository.getStudents().flatMapCompletable { newStudents -> studentsDao.insertAll(newStudents) }
+        return networkRepository.getStudents()
+            .flatMapCompletable { newStudents -> studentsDao.deleteAll().andThen(studentsDao.insertAll(newStudents)) }
             .doOnComplete { updateTimeSaver.saveUpdateTime(System.currentTimeMillis()) }
             .andThen(retrieveStudentsFromDb())
     }

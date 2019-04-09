@@ -5,8 +5,6 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
-import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -14,17 +12,17 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import xyz.mperminov.tfscoursework.R
-import xyz.mperminov.tfscoursework.models.Contact
+import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
+import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.utils.toast
 import java.util.concurrent.TimeUnit
 
-class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, StudentsRepository.UpdateTimeSaver {
-    private var contacts = mutableListOf<Contact>()
-    private val firstNames: Array<String> = arrayOf("Alexander", "Mikhail", "Ivan", "Tikhon")
-    private val lastNames: Array<String> = arrayOf("Ivanov", "Petrov", "Sidorov", "Martynov")
+class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider, StudentsRepository.UpdateTimeSaver {
+    private var childFragmentsAdder: ChildFragmentsAdder? = null
+
     private lateinit var currentLayoutManagerType: LayoutManagerType
     private var listener: OnUpSelectedHandler? = null
 
@@ -34,11 +32,12 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
     private var studentSchemaDisposable: Disposable? = null
     private val ARG_TIME_UPDATE = "last_time_updated"
     private lateinit var layoutManager: RecyclerView.LayoutManager
-    private lateinit var layoutAdapter: RecyclerView.Adapter<ContactAdapter.ViewHolder>
+    private lateinit var layoutAdapter: RecyclerView.Adapter<StudentsAdapter.ViewHolder>
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnUpSelectedHandler) {
+        if (context is OnUpSelectedHandler && context is ChildFragmentsAdder) {
             listener = context
+            childFragmentsAdder = context
         } else {
             throw RuntimeException("$context must implement OnUpSelectedHandler")
         }
@@ -46,9 +45,6 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            contacts = it.getParcelableArrayList<Contact>(ARG_CONTACTS).orEmpty().toMutableList()
-        }
         setHasOptionsMenu(true)
     }
 
@@ -56,7 +52,6 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        setHasOptionsMenu(true)
         return inflater.inflate(R.layout.fragment_contact_list, container, false)
     }
 
@@ -66,9 +61,8 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
         if (savedInstanceState != null) {
             currentLayoutManagerType = savedInstanceState
                 .getSerializable(KEY_LAYOUT_MANAGER) as LayoutManagerType
-            contacts = savedInstanceState.getParcelableArrayList<Contact>(ARG_CONTACTS) as MutableList<Contact>
         }
-        layoutAdapter = ContactAdapter(contacts)
+        layoutAdapter = StudentsAdapter()
         rv.adapter = layoutAdapter
         val dividerItemDecoration = ContactItemDecoration(context!!)
         rv.addItemDecoration(dividerItemDecoration)
@@ -82,9 +76,8 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
             studentsRepository.getStudents()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                    { studentSchema ->
-                        Log.d("student schema", studentSchema.joinToString()); Log.d("students initials",
-                        studentSchema.joinToString { it.getInitials() })
+                    { students ->
+                        (rv.adapter as StudentsAdapter).students = students
                     },
                     { e -> Log.e("error", e.localizedMessage) })
 
@@ -106,13 +99,13 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, currentLayoutManagerType)
-        savedInstanceState.putParcelableArrayList(ARG_CONTACTS, contacts as ArrayList<Contact>)
         super.onSaveInstanceState(savedInstanceState)
     }
 
     override fun onDetach() {
         super.onDetach()
         listener = null
+        childFragmentsAdder = null
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -135,28 +128,12 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
     }
 
     private fun addContact() {
-        contacts.add(Contact(getRandomFirstName(), getRandomLastName()))
-        layoutAdapter.notifyItemInserted(contacts.size - 1)
     }
 
-    private fun getRandomFirstName(): String = firstNames.random()
-    private fun getRandomLastName(): String = lastNames.random()
     private fun deleteContact() {
-        if (contacts.size == 0) {
-            context?.toast(getString(R.string.nothing_delete))
-            return
-        }
-        val positionToDelete = (0 until contacts.size).random()
-        contacts.removeAt(positionToDelete)
-        layoutAdapter.notifyItemRemoved(positionToDelete)
     }
 
     private fun mixContacts() {
-        val oldContacts = mutableListOf<Contact>()
-        oldContacts.addAll(contacts)
-        contacts.shuffle()
-        val diffResult = DiffUtil.calculateDiff(ContactsDiffUtil(oldContacts, contacts))
-        diffResult.dispatchUpdatesTo(layoutAdapter)
     }
 
     private fun setRecyclerViewLayoutManager(layoutManagerType: LayoutManagerType) {
@@ -168,26 +145,26 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
         }
 
         when (layoutManagerType) {
-            ContactFragment.LayoutManagerType.GRID_LAYOUT_MANAGER -> {
+            StudentsFragment.LayoutManagerType.GRID_LAYOUT_MANAGER -> {
                 layoutManager = GridLayoutManager(activity, SPAN_COUNT)
                 currentLayoutManagerType = LayoutManagerType.GRID_LAYOUT_MANAGER
             }
-            ContactFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER -> {
+            StudentsFragment.LayoutManagerType.LINEAR_LAYOUT_MANAGER -> {
                 layoutManager = LinearLayoutManager(activity)
                 currentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER
             }
         }
 
         if (rv.adapter != null) {
-            (rv.adapter as ContactAdapter).changeLayout(
+            (rv.adapter as StudentsAdapter).changeLayout(
                 if (currentLayoutManagerType == LayoutManagerType.LINEAR_LAYOUT_MANAGER)
-                    ContactAdapter.LIST_ITEM
+                    StudentsAdapter.LIST_ITEM
                 else
-                    ContactAdapter.GRID_ITEM
+                    StudentsAdapter.GRID_ITEM
             )
         }
         with(rv) {
-            layoutManager = this@ContactFragment.layoutManager
+            layoutManager = this@StudentsFragment.layoutManager
             scrollToPosition(scrollPosition)
         }
     }
@@ -205,15 +182,14 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider, Student
         return TimeUnit.MILLISECONDS.toSeconds(currentTime - lastTimeUpdate)
     }
 
+    override fun handleBackPress() {
+        childFragmentsAdder?.onBackPressHandled()
+    }
+
     companion object {
         private const val KEY_LAYOUT_MANAGER = "layoutManager"
         private const val SPAN_COUNT = 2
-        const val ARG_CONTACTS = "contacts"
         @JvmStatic
-        fun newInstance(contacts: List<Contact>) = ContactFragment().apply {
-            arguments = Bundle().apply {
-                putParcelableArrayList(ARG_CONTACTS, ArrayList(contacts))
-            }
-        }
+        fun newInstance() = StudentsFragment()
     }
 }

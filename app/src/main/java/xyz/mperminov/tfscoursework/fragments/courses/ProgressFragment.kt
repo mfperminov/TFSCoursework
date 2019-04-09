@@ -1,5 +1,6 @@
 package xyz.mperminov.tfscoursework.fragments.courses
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
@@ -12,17 +13,30 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_progress.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.activities.ContactActivity
+import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
+import xyz.mperminov.tfscoursework.fragments.contact.StudentsFragment
 import xyz.mperminov.tfscoursework.utils.views.ProfileView
 import java.lang.ref.WeakReference
 
 class ProgressFragment : Fragment(), BadgeUpdateCallback {
+    private var childFragmentsAdder: ChildFragmentsAdder? = null
+    override fun onAttach(context: Context) {
+        if (context is ChildFragmentsAdder) childFragmentsAdder = context
+        super.onAttach(context)
+    }
+
+    override fun onDetach() {
+        childFragmentsAdder = null
+        super.onDetach()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_progress, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         progress_header_layout.setOnClickListener {
-            startContactActivity()
+            childFragmentsAdder?.addChildOnTop(StudentsFragment.newInstance())
         }
     }
 
