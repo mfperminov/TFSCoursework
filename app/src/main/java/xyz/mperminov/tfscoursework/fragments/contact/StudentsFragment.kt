@@ -22,7 +22,6 @@ import java.util.concurrent.TimeUnit
 
 class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider, StudentsRepository.UpdateTimeSaver {
     private var childFragmentsAdder: ChildFragmentsAdder? = null
-
     private lateinit var currentLayoutManagerType: LayoutManagerType
     private var listener: OnUpSelectedHandler? = null
 
@@ -68,29 +67,42 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
         rv.addItemDecoration(dividerItemDecoration)
         rv.itemAnimator = ContactItemAnimator(context!!)
         setRecyclerViewLayoutManager(currentLayoutManagerType)
+        swipe_refresh.setOnRefreshListener { updateStudents() }
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onStart() {
+        updateStudents()
+        super.onStart()
+    }
+
+    private fun updateStudents() {
         studentSchemaDisposable =
             studentsRepository.getStudents()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { students ->
+                        hideProgress()
                         (rv.adapter as StudentsAdapter).students = students
                     },
-                    { e -> Log.e("error", e.localizedMessage) })
-
-        super.onStart()
+                    { e ->
+                        hideProgress()
+                        Log.e("error", e.localizedMessage)
+                    })
     }
 
     override fun onStop() {
+        hideProgress()
         studentSchemaDisposable?.dispose()
         super.onStop()
     }
 
     private fun showError(message: String) {
         context?.toast(message)
+    }
+
+    private fun hideProgress() {
+        if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
     }
 
     override fun getToken(): String? {

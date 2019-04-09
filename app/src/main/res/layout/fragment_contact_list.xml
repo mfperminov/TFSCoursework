@@ -1,13 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rv"
+    android:id="@+id/swipe_refresh"
     android:name="xyz.mperminov.tfscoursework.fragments.ContactFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    android:clipToPadding="false"
-    android:paddingBottom="16dp"
-    tools:context=".fragments.contact.StudentsFragment"
-    tools:listitem="@layout/viewholder_contact" />
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp"
+        tools:context=".fragments.contact.StudentsFragment"
+        tools:listitem="@layout/viewholder_contact" />
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
