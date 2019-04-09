@@ -82,7 +82,11 @@ class ContactFragment : Fragment(), UserNetworkRepository.TokenProvider {
             studentSchemaDisposable =
                 api.getStudents(token).take(1).map { list -> StudentMapper().mapToDbModel(list) }
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe({ studentSchema -> Log.d("student schema", studentSchema.joinToString()) },
+                    .subscribe(
+                        { studentSchema ->
+                            Log.d("student schema", studentSchema.joinToString()); Log.d("students initials",
+                            studentSchema.joinToString { it.getInitials() })
+                        },
                         { e -> Log.e("error", e.localizedMessage) })
         else
             showError(getString(R.string.error_no_user_auth))

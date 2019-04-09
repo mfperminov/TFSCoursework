@@ -4,6 +4,14 @@ import xyz.mperminov.tfscoursework.repositories.students.network.StudentSchema
 import xyz.mperminov.tfscoursework.utils.round
 
 data class Student(val id: Int, val name: String, val mark: Double) {
+    private fun collectLastNameAndName(): List<String> {
+        return name.split("\\s".toRegex(), 2)
+    }
+
+    fun getInitials(): String {
+        return collectLastNameAndName().reduce { acc, s -> acc[0].toString().plus(s[0]) }
+    }
+
     companion object {
         val NOBODY = Student(0, "", 0.0)
     }
