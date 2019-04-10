@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.viewholder_contact.view.*
 import kotlinx.android.synthetic.main.viewholder_contact_grid.view.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
+import xyz.mperminov.tfscoursework.utils.getPluralsStringForDouble
 
 class StudentsAdapter : RecyclerView.Adapter<StudentsAdapter.ViewHolder>(), Filterable {
     private var viewType: Int = LIST_ITEM
@@ -82,6 +83,7 @@ class StudentsAdapter : RecyclerView.Adapter<StudentsAdapter.ViewHolder>(), Filt
                     name.text = student.name
                     if (position % 2 == 0) round_view.setColor(R.color.colorPrimary) else round_view.setColor(R.color.accent_material_dark)
                     points.text = context.getString(R.string.points_count, student.mark)
+                    points.text = resources.getPluralsStringForDouble(R.plurals.plurals_marks, student.mark)
                 }
                 GRID_ITEM -> {
                     with(itemView) {

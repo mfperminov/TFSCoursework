@@ -1,10 +1,12 @@
 package xyz.mperminov.tfscoursework.utils
 
 import android.content.Context
+import android.content.res.Resources
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import android.widget.Toast
+import androidx.annotation.PluralsRes
 import com.google.android.material.textfield.TextInputLayout
 import kotlin.math.round
 
@@ -35,3 +37,6 @@ fun Double.round(decimals: Int): Double {
     repeat(decimals) { multiplier *= 10 }
     return round(this * multiplier) / multiplier
 }
+
+fun Resources.getPluralsStringForDouble(@PluralsRes pluralResId: Int, pluralValue: Double) =
+    this.getQuantityString(pluralResId, Math.ceil(pluralValue).toInt(), pluralValue)
