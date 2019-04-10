@@ -14,6 +14,6 @@
         android:layout_marginRight="16dp"
         android:clipToPadding="false"
         android:paddingBottom="16dp"
-        tools:context=".fragments.contact.StudentsFragment"
+        tools:context=".fragments.students.StudentsFragment"
         tools:listitem="@layout/viewholder_contact" />
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

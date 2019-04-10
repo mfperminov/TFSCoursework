@@ -15,9 +15,9 @@ import xyz.mperminov.tfscoursework.fragments.activitites.ActivitiesFragment
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
-import xyz.mperminov.tfscoursework.fragments.contact.StudentsFragment
 import xyz.mperminov.tfscoursework.fragments.courses.CoursesFragment
 import xyz.mperminov.tfscoursework.fragments.profile.ProfileFragment
+import xyz.mperminov.tfscoursework.fragments.students.StudentsFragment
 import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 

@@ -1,12 +1,15 @@
 package xyz.mperminov.tfscoursework.repositories.students.db
 
+import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import kotlinx.android.parcel.Parcelize
 import xyz.mperminov.tfscoursework.repositories.students.network.StudentSchema
 import xyz.mperminov.tfscoursework.utils.round
 
 @Entity(tableName = "students")
-data class Student(@PrimaryKey val id: Int, val name: String, val mark: Double) {
+@Parcelize
+data class Student(@PrimaryKey val id: Int, val name: String, val mark: Double) : Parcelable {
     private fun collectLastNameAndName(): List<String> {
         return name.split("\\s".toRegex(), 2)
     }

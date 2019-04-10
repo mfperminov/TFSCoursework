@@ -13,7 +13,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import xyz.mperminov.tfscoursework.R
-import xyz.mperminov.tfscoursework.fragments.contact.StudentsFragment
+import xyz.mperminov.tfscoursework.fragments.students.StudentsFragment
 import xyz.mperminov.tfscoursework.models.Contact
 import xyz.mperminov.tfscoursework.services.BROADCAST_ACTION
 import xyz.mperminov.tfscoursework.services.ContactService

@@ -1,10 +1,12 @@
-package xyz.mperminov.tfscoursework.fragments.contact
+package xyz.mperminov.tfscoursework.fragments.students
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,6 +21,7 @@ import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.utils.toast
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider, StudentsRepository.UpdateTimeSaver {
@@ -30,8 +33,10 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
 
     private val studentsRepository = StudentsRepository(this, this)
     private var studentSchemaDisposable: Disposable? = null
-    private val ARG_TIME_UPDATE = "last_time_updated"
+    private var studentsBackup: List<Student>? = null
     private lateinit var layoutManager: RecyclerView.LayoutManager
+    private val ARG_TIME_UPDATE = "last_time_updated"
+    private val LIST_LIFETIME_SEC = 10
     private lateinit var layoutAdapter: RecyclerView.Adapter<StudentsAdapter.ViewHolder>
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -61,19 +66,21 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
         if (savedInstanceState != null) {
             currentLayoutManagerType = savedInstanceState
                 .getSerializable(KEY_LAYOUT_MANAGER) as LayoutManagerType
+            studentsBackup = savedInstanceState.getParcelableArrayList(KEY_LIST_STUDENTS)
         }
         layoutAdapter = StudentsAdapter()
         rv.adapter = layoutAdapter
-        val dividerItemDecoration = ContactItemDecoration(context!!)
+        val dividerItemDecoration = StudentItemDecoration(context!!)
         rv.addItemDecoration(dividerItemDecoration)
-        rv.itemAnimator = ContactItemAnimator(context!!)
+        rv.itemAnimator = StudentItemAnimator(context!!)
         setRecyclerViewLayoutManager(currentLayoutManagerType)
         swipe_refresh.setOnRefreshListener { updateStudents() }
         super.onViewCreated(view, savedInstanceState)
     }
 
     override fun onStart() {
-        updateStudents()
+        if (studentsBackup == null || needUpdateList()) updateStudents()
+        else (rv.adapter as StudentsAdapter).students = studentsBackup!!
         super.onStart()
     }
 
@@ -112,6 +119,10 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, currentLayoutManagerType)
+        savedInstanceState.putParcelableArrayList(
+            KEY_LIST_STUDENTS,
+            (rv.adapter as StudentsAdapter).students as ArrayList<out Parcelable>
+        )
         super.onSaveInstanceState(savedInstanceState)
     }
 
@@ -123,6 +134,23 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.contact_fragment_menu, menu)
+        setSearchView(menu)
+    }
+
+    private fun setSearchView(menu: Menu) {
+        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(query: String?): Boolean {
+                (rv.adapter as StudentsAdapter).filter.filter(query)
+                return false
+            }
+
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                (rv.adapter as StudentsAdapter).filter.filter(query)
+                return false
+            }
+        })
+        searchView.setOnCloseListener { (rv.adapter as StudentsAdapter).resetFilter();searchView.onActionViewCollapsed(); true }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -195,6 +223,10 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
         fun onUpSelected()
     }
 
+    private fun needUpdateList(): Boolean {
+        return (getTimeDiffInSeconds(System.currentTimeMillis()) > LIST_LIFETIME_SEC)
+    }
+
     override fun saveUpdateTime(timestamp: Long) {
         PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(ARG_TIME_UPDATE, timestamp).apply()
     }
@@ -210,6 +242,7 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
 
     companion object {
         private const val KEY_LAYOUT_MANAGER = "layoutManager"
+        private const val KEY_LIST_STUDENTS = "list students"
         private const val SPAN_COUNT = 2
         @JvmStatic
         fun newInstance() = StudentsFragment()

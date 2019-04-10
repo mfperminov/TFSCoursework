@@ -14,7 +14,7 @@ import kotlinx.android.synthetic.main.fragment_progress.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.activities.ContactActivity
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
-import xyz.mperminov.tfscoursework.fragments.contact.StudentsFragment
+import xyz.mperminov.tfscoursework.fragments.students.StudentsFragment
 import xyz.mperminov.tfscoursework.utils.views.ProfileView
 import java.lang.ref.WeakReference
 

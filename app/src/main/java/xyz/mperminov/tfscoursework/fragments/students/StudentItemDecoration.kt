@@ -1,4 +1,4 @@
-package xyz.mperminov.tfscoursework.fragments.contact
+package xyz.mperminov.tfscoursework.fragments.students
 
 import android.content.Context
 import android.graphics.Canvas
@@ -9,7 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import xyz.mperminov.tfscoursework.R
 
-class ContactItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
+class StudentItemDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     private val BORDER_WIDTH = 4
     private val rect: Rect = Rect(BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH, BORDER_WIDTH)

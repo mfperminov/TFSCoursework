@@ -1,17 +1,24 @@
-package xyz.mperminov.tfscoursework.fragments.contact
+package xyz.mperminov.tfscoursework.fragments.students
 
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Filter
+import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.viewholder_contact.view.*
 import kotlinx.android.synthetic.main.viewholder_contact_grid.view.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
 
-class StudentsAdapter : RecyclerView.Adapter<StudentsAdapter.ViewHolder>() {
+class StudentsAdapter : RecyclerView.Adapter<StudentsAdapter.ViewHolder>(), Filterable {
     private var viewType: Int = LIST_ITEM
     var students: List<Student> = listOf()
+        set(value) {
+            field = value
+            filteredStudents = value
+        }
+    private var filteredStudents: List<Student> = listOf()
         set(value) {
             field = value
             notifyDataSetChanged()
@@ -39,8 +46,34 @@ class StudentsAdapter : RecyclerView.Adapter<StudentsAdapter.ViewHolder>() {
         }
     }
 
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(students[position], position)
-    override fun getItemCount(): Int = students.size
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(filteredStudents[position], position)
+    override fun getItemCount(): Int = filteredStudents.size
+    override fun getFilter(): Filter {
+        return object : Filter() {
+            override fun performFiltering(query: CharSequence?): FilterResults {
+                val newFilteredList = if (query.toString().isEmpty()) filteredStudents else filteredStudents.filter {
+                    it.name.contains(
+                        query!!,
+                        true
+                    )
+                }.sortedWith(
+                    CompareStudents.Companion
+                )
+                val filterResults = Filter.FilterResults()
+                filterResults.values = newFilteredList
+                return filterResults
+            }
+
+            override fun publishResults(p0: CharSequence?, results: FilterResults?) {
+                filteredStudents = results?.values as List<Student>
+            }
+        }
+    }
+
+    fun resetFilter() {
+        filteredStudents = students
+    }
+
     inner class ViewHolder(mView: View) : RecyclerView.ViewHolder(mView) {
         fun bind(student: Student, position: Int) {
             when (viewType) {

@@ -1,4 +1,4 @@
-package xyz.mperminov.tfscoursework.fragments.contact
+package xyz.mperminov.tfscoursework.fragments.students
 
 import androidx.recyclerview.widget.DiffUtil
 import xyz.mperminov.tfscoursework.models.Contact

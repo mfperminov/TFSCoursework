@@ -1,4 +1,4 @@
-package xyz.mperminov.tfscoursework.fragments.contact
+package xyz.mperminov.tfscoursework.fragments.students
 
 import android.animation.AnimatorInflater
 import android.content.Context
@@ -8,8 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import xyz.mperminov.tfscoursework.R
 
-
-class ContactItemAnimator(val context: Context) : SimpleItemAnimator() {
+class StudentItemAnimator(val context: Context) : SimpleItemAnimator() {
     private var removeAnimationRunning = false
     override fun animateAdd(holder: RecyclerView.ViewHolder?): Boolean {
         val set = AnimatorInflater.loadAnimator(
