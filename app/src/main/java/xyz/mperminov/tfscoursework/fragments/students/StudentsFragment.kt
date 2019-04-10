@@ -2,7 +2,6 @@ package xyz.mperminov.tfscoursework.fragments.students
 
 import android.content.Context
 import android.os.Bundle
-import android.os.Parcelable
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.*
@@ -23,6 +22,7 @@ import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkReposito
 import xyz.mperminov.tfscoursework.utils.toast
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
 
 class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider, StudentsRepository.UpdateTimeSaver {
     private var childFragmentsAdder: ChildFragmentsAdder? = null
@@ -119,9 +119,10 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
 
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, currentLayoutManagerType)
+        val studentsArrayList = ArrayList<Student>((rv.adapter as StudentsAdapter).students)
         savedInstanceState.putParcelableArrayList(
             KEY_LIST_STUDENTS,
-            (rv.adapter as StudentsAdapter).students as ArrayList<out Parcelable>
+            studentsArrayList
         )
         super.onSaveInstanceState(savedInstanceState)
     }
