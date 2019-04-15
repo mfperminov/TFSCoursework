@@ -8,6 +8,12 @@ class LoginViewModel : ViewModel() {
     private val loginRepository = LoginRepository()
     private var authDisposable: Disposable? = null
     val response: MutableLiveData<Response> = MutableLiveData()
+    val tokenStatus: MutableLiveData<Boolean> = MutableLiveData()
+
+    init {
+        tokenStatus.value = loginRepository.isTokenValid()
+    }
+
     override fun onCleared() {
         authDisposable?.dispose()
         authDisposable = null

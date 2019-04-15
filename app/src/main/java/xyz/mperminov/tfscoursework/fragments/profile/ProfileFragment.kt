@@ -1,41 +1,26 @@
 package xyz.mperminov.tfscoursework.fragments.profile
 
+import android.graphics.Bitmap
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.squareup.picasso.Picasso
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_profile.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.models.User
-import xyz.mperminov.tfscoursework.network.Api
-import xyz.mperminov.tfscoursework.network.AuthHolder
-import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.utils.toast
 
-class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
-    private var user: User? = null
-    private var userDisposable: Disposable? = null
-    private val repository = UserNetworkRepository(this)
+class ProfileFragment : Fragment() {
+    private lateinit var viewModel: ProfileViewModel
 
     companion object {
-        private const val ARG_USER = "user"
-        private const val ARG_STRING_NO_USER = "user"
-        fun newInstance(user: User?, stringNoUser: String?): ProfileFragment {
-            val args = Bundle()
-            if (user != null)
-                args.putParcelable(ARG_USER, user)
-            else
-                args.putString(ARG_STRING_NO_USER, stringNoUser)
-            val fragment = ProfileFragment()
-            fragment.arguments = args
-            return fragment
+        fun newInstance(): ProfileFragment {
+            return ProfileFragment()
         }
 
         const val TAG = "PROFILE_FRAGMENT"
@@ -52,21 +37,27 @@ class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.profile))
         btn_edit.setOnClickListener {
-            val editProfileFragment = EditProfileFragment.newInstance(user ?: User.NOBODY)
+            val editProfileFragment = EditProfileFragment.newInstance(viewModel.user.value ?: User.NOBODY)
             (activity as ChildFragmentsAdder).addChildOnTop(editProfileFragment)
         }
+        setupViewModel()
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onStart() {
-        userDisposable = repository.getUser().observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ user -> this.user = user; updateUi(user) }, { e -> showError(e.localizedMessage) })
-        super.onStart()
-    }
-
-    override fun onStop() {
-        userDisposable?.dispose()
-        super.onStop()
+    private fun setupViewModel() {
+        viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
+        with(viewModel) {
+            getUser()
+            user.observe(this@ProfileFragment, Observer { user -> updateUi(user) })
+            avatar.observe(
+                this@ProfileFragment,
+                Observer { avatarImage ->
+                    avatarImage.bitmap?.let { setAvatarImage(it) }
+                    avatarImage.e?.let {
+                        showError(it.localizedMessage)
+                    }
+                })
+        }
     }
 
     private fun showError(message: String) {
@@ -76,12 +67,10 @@ class ProfileFragment : Fragment(), UserNetworkRepository.TokenProvider {
     private fun updateUi(user: User) {
         if (user != User.NOBODY) {
             user_info.text = user.toString()
-            if (user.avatar != null)
-                Picasso.get().load(Api.API_AVATAR_HOST + "${user.avatar}").into(avatar)
-        } else user_info.text = getString(R.string.error_no_info)
+        } else showError(getString(R.string.error_no_info))
     }
 
-    override fun getToken(): String? {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(AuthHolder.AUTH_TOKEN_ARG, null)
+    private fun setAvatarImage(avatarImage: Bitmap) {
+        avatar.setImageBitmap(avatarImage)
     }
 }

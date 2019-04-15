@@ -18,6 +18,7 @@ class LoginActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
         viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+        viewModel.tokenStatus.observe(this, Observer { isTokenValid -> if (isTokenValid) proceedToMainActivity() })
         viewModel.response.observe(this, Observer { response -> processResponse(response) })
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {

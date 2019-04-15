@@ -8,4 +8,9 @@ class LoginRepository {
     fun login(email: String, password: String): Completable {
         return authHolder.updateToken(email, password)
     }
+
+    fun isTokenValid(): Boolean {
+        //Todo more checks (expires?)
+        return authHolder.getToken() != null
+    }
 }
