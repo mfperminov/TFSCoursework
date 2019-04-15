@@ -54,6 +54,7 @@
     <string name="error_no_user_auth">No logged in user</string>
     <string name="sort_alphabetically">Sort alphabetically</string>
     <string name="sort_by_marks">Sort by marks</string>
+    <string name="unknown_error">Unknown error</string>
     <string name="search">Search</string>
     <plurals name="plurals_marks">
         <item quantity="zero">%s points</item>

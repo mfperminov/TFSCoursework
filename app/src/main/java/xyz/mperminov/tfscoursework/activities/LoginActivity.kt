@@ -1,54 +1,40 @@
 package xyz.mperminov.tfscoursework.activities
 
-import android.app.Activity
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.preference.PreferenceManager
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
-import io.reactivex.disposables.Disposable
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.activity_login.*
 import xyz.mperminov.tfscoursework.R
-import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.utils.toast
 
-class LoginActivity : Activity(), AuthHolder.PrefsProvider {
-
-    private lateinit var authHolder: AuthHolder
-    private var authDisposable: Disposable? = null
-
+class LoginActivity : AppCompatActivity() {
+    private lateinit var viewModel: LoginViewModel
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
-        authHolder = AuthHolder(this)
-        if (authHolder.getToken() != null) proceedToMainActivity() //Todo check if token valid (expires?)
+        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
+        viewModel.response.observe(this, Observer { response -> processResponse(response) })
         password.setOnEditorActionListener(TextView.OnEditorActionListener { _, id, _ ->
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
-                attemptLogin(email.text.toString(), password.text.toString())
+                viewModel.attemptToLogin(email.text.toString(), password.text.toString())
                 return@OnEditorActionListener true
             }
             false
         })
-        sign_in_button.setOnClickListener { attemptLogin(email.text.toString(), password.text.toString()) }
+        sign_in_button.setOnClickListener { viewModel.attemptToLogin(email.text.toString(), password.text.toString()) }
     }
 
-    private fun attemptLogin(email: String, password: String) {
-        showProgress()
-        authDisposable = authHolder.updateToken(email, password)
-            .subscribe({ onAuthSuccess() }, { t -> onAuthFailure(t.localizedMessage) })
-    }
-
-    override fun onStop() {
-        super.onStop()
-        authDisposable?.dispose()
-    }
-
-    private fun onAuthSuccess() {
-        hideProgress()
-        this.toast(getString(R.string.auth_success))
-        proceedToMainActivity()
+    private fun processResponse(response: Response) {
+        when (response) {
+            is Response.Error -> showFailure(response.error?.localizedMessage)
+            is Response.Loading -> showProgress()
+            is Response.Success -> showSuccess()
+        }
     }
 
     private fun proceedToMainActivity() {
@@ -56,13 +42,15 @@ class LoginActivity : Activity(), AuthHolder.PrefsProvider {
         finish()
     }
 
-    private fun onAuthFailure(msg: String) {
+    private fun showSuccess() {
         hideProgress()
-        this.toast(msg)
+        this.toast(getString(R.string.auth_success))
+        proceedToMainActivity()
     }
 
-    override fun getPreferences(): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(this)
+    private fun showFailure(msg: String?) {
+        hideProgress()
+        this.toast(msg ?: getString(R.string.unknown_error))
     }
 
     private fun showProgress() {

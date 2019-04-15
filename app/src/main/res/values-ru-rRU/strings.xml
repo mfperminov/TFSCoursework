@@ -59,4 +59,5 @@
         <item quantity="many">%s балла</item>
         <item quantity="other">%s балла</item>
     </plurals>
+    <string name="unknown_error">Неизвестная ошибка</string>
 </resources>

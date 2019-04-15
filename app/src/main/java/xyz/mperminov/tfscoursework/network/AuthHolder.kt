@@ -13,7 +13,6 @@ class AuthHolder(private val prefsProvider: PrefsProvider) {
     }
 
     private val cookiesRecInterceptor = HttpClient.cookiesRecInterceptor
-    private val api: Api = RestClient.api
 
     private fun saveToken() {
         Log.d("SavingToken", "${cookiesRecInterceptor.authCookie}")
