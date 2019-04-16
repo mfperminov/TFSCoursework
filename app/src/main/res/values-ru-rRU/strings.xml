@@ -54,10 +54,11 @@
     <string name="sort_by_marks">Сортировать по успеваемости</string>
     <string name="search">Поиск</string>
     <plurals name="plurals_marks">
-        <item quantity="one">%s балла</item>
+        <item quantity="one">%s балл</item>
         <item quantity="few">%s балла</item>
         <item quantity="many">%s балла</item>
         <item quantity="other">%s балла</item>
     </plurals>
     <string name="unknown_error">Неизвестная ошибка</string>
+    <string name="no_students_message">В списке нет студентов. Попробуйте обновить страницу</string>
 </resources>

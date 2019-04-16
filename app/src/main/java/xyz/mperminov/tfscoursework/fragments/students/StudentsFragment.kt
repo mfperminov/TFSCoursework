@@ -2,42 +2,30 @@ package xyz.mperminov.tfscoursework.fragments.students
 
 import android.content.Context
 import android.os.Bundle
-import android.preference.PreferenceManager
-import android.util.Log
 import android.view.*
 import androidx.appcompat.widget.SearchView
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
-import xyz.mperminov.tfscoursework.network.AuthHolder
-import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
-import xyz.mperminov.tfscoursework.repositories.students.db.Student
-import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.utils.toast
-import java.util.*
-import java.util.concurrent.TimeUnit
-import kotlin.collections.ArrayList
 
-class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvider, StudentsRepository.UpdateTimeSaver {
+class StudentsFragment : BaseChildFragment() {
+    private lateinit var viewModel: StudentsViewModel
     private var childFragmentsAdder: ChildFragmentsAdder? = null
     private lateinit var currentLayoutManagerType: LayoutManagerType
     private var listener: OnUpSelectedHandler? = null
 
     enum class LayoutManagerType { GRID_LAYOUT_MANAGER, LINEAR_LAYOUT_MANAGER }
 
-    private val studentsRepository = StudentsRepository(this, this)
-    private var studentSchemaDisposable: Disposable? = null
-    private var studentsBackup: List<Student>? = null
     private lateinit var layoutManager: RecyclerView.LayoutManager
-    private val ARG_TIME_UPDATE = "last_time_updated"
-    private val LIST_LIFETIME_SEC = 10
     private lateinit var layoutAdapter: RecyclerView.Adapter<StudentsAdapter.ViewHolder>
+    private lateinit var searchView: SearchView
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (context is OnUpSelectedHandler && context is ChildFragmentsAdder) {
@@ -50,7 +38,21 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        viewModel = ViewModelProviders.of(this).get(StudentsViewModel::class.java)
+        if (savedInstanceState == null) viewModel.getStudents()
+        viewModel.result.observe(this, Observer { result ->
+            when (result) {
+                is Result.Success -> showSuccess()
+                is Result.Error -> showError(result.error!!.localizedMessage)
+                is Result.Loading -> showProgress()
+                is Result.Empty -> showEmptyState()
+            }
+        })
         setHasOptionsMenu(true)
+    }
+
+    private fun showEmptyState() {
+        context?.toast(getString(R.string.no_students_message))
     }
 
     override fun onCreateView(
@@ -66,64 +68,39 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
         if (savedInstanceState != null) {
             currentLayoutManagerType = savedInstanceState
                 .getSerializable(KEY_LAYOUT_MANAGER) as LayoutManagerType
-            studentsBackup = savedInstanceState.getParcelableArrayList(KEY_LIST_STUDENTS)
         }
         layoutAdapter = StudentsAdapter()
         rv.adapter = layoutAdapter
+        viewModel.studentsLiveData.observe(
+            this,
+            Observer { students -> (rv.adapter as StudentsAdapter).students = students })
         val dividerItemDecoration = StudentItemDecoration(context!!)
         rv.addItemDecoration(dividerItemDecoration)
         rv.itemAnimator = StudentItemAnimator(context!!)
         setRecyclerViewLayoutManager(currentLayoutManagerType)
-        swipe_refresh.setOnRefreshListener { updateStudents() }
+        swipe_refresh.setOnRefreshListener { viewModel.getStudents() }
         super.onViewCreated(view, savedInstanceState)
     }
 
-    override fun onStart() {
-        if (studentsBackup == null || needUpdateList()) updateStudents()
-        else (rv.adapter as StudentsAdapter).students = studentsBackup!!
-        super.onStart()
-    }
-
-    private fun updateStudents() {
-        studentSchemaDisposable =
-            studentsRepository.getStudents()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { students ->
-                        hideProgress()
-                        (rv.adapter as StudentsAdapter).students = students
-                    },
-                    { e ->
-                        hideProgress()
-                        Log.e("error", e.localizedMessage)
-                    })
-    }
-
-    override fun onStop() {
+    private fun showSuccess() {
         hideProgress()
-        studentSchemaDisposable?.dispose()
-        super.onStop()
     }
 
     private fun showError(message: String) {
+        hideProgress()
         context?.toast(message)
+    }
+
+    private fun showProgress() {
+        swipe_refresh.isRefreshing = true
     }
 
     private fun hideProgress() {
         if (swipe_refresh.isRefreshing) swipe_refresh.isRefreshing = false
     }
 
-    override fun getToken(): String? {
-        return PreferenceManager.getDefaultSharedPreferences(context).getString(AuthHolder.AUTH_TOKEN_ARG, null)
-    }
-
     override fun onSaveInstanceState(savedInstanceState: Bundle) {
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, currentLayoutManagerType)
-        val studentsArrayList = ArrayList<Student>((rv.adapter as StudentsAdapter).students)
-        savedInstanceState.putParcelableArrayList(
-            KEY_LIST_STUDENTS,
-            studentsArrayList
-        )
         super.onSaveInstanceState(savedInstanceState)
     }
 
@@ -139,19 +116,24 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
     }
 
     private fun setSearchView(menu: Menu) {
-        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        if (!viewModel.searchQuery.value.isNullOrEmpty()) {
+            searchView.setQuery(viewModel.searchQuery.value, false)
+            searchView.isIconified = false
+            searchView.clearFocus()
+        }
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(query: String?): Boolean {
-                (rv.adapter as StudentsAdapter).filter.filter(query)
+                viewModel.filter.filter(query)
                 return false
             }
 
             override fun onQueryTextSubmit(query: String?): Boolean {
-                (rv.adapter as StudentsAdapter).filter.filter(query)
+                viewModel.filter.filter(query)
                 return false
             }
         })
-        searchView.setOnCloseListener { (rv.adapter as StudentsAdapter).resetFilter();searchView.onActionViewCollapsed(); true }
+        searchView.setOnCloseListener { viewModel.resetFilter();searchView.onActionViewCollapsed(); true }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -162,29 +144,10 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
                     setRecyclerViewLayoutManager(LayoutManagerType.GRID_LAYOUT_MANAGER)
                 else setRecyclerViewLayoutManager(LayoutManagerType.LINEAR_LAYOUT_MANAGER)
             }
-            R.id.sort_alpha -> sortStudentsAlphabetically()
-            R.id.sort_marks -> sortStudentsByMarks()
+            R.id.sort_alpha -> viewModel.sortStudentsAlphabetically()
+            R.id.sort_marks -> viewModel.sortStudentsByMarks()
         }
         return super.onOptionsItemSelected(item)
-    }
-
-    private fun sortStudentsByMarks() {
-        (rv.adapter as StudentsAdapter).students = (rv.adapter as StudentsAdapter).students.sortedWith(
-            CompareStudents.Companion
-        )
-    }
-
-    private fun sortStudentsAlphabetically() {
-        (rv.adapter as StudentsAdapter).students = (rv.adapter as StudentsAdapter).students.sortedBy { it.name }
-    }
-
-    private fun addContact() {
-    }
-
-    private fun deleteContact() {
-    }
-
-    private fun mixContacts() {
     }
 
     private fun setRecyclerViewLayoutManager(layoutManagerType: LayoutManagerType) {
@@ -224,19 +187,6 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
         fun onUpSelected()
     }
 
-    private fun needUpdateList(): Boolean {
-        return (getTimeDiffInSeconds(System.currentTimeMillis()) > LIST_LIFETIME_SEC)
-    }
-
-    override fun saveUpdateTime(timestamp: Long) {
-        PreferenceManager.getDefaultSharedPreferences(context).edit().putLong(ARG_TIME_UPDATE, timestamp).apply()
-    }
-
-    override fun getTimeDiffInSeconds(currentTime: Long): Long {
-        val lastTimeUpdate = PreferenceManager.getDefaultSharedPreferences(context).getLong(ARG_TIME_UPDATE, 0)
-        return TimeUnit.MILLISECONDS.toSeconds(currentTime - lastTimeUpdate)
-    }
-
     override fun handleBackPress() {
         childFragmentsAdder?.onBackPressHandled()
     }
@@ -250,15 +200,3 @@ class StudentsFragment : BaseChildFragment(), UserNetworkRepository.TokenProvide
     }
 }
 
-class CompareStudents {
-    companion object : Comparator<Student> {
-        override fun compare(a: Student, b: Student): Int {
-            return when {
-                a.mark > b.mark -> -1
-                b.mark > a.mark -> 1
-                a.name > b.name -> 1
-                else -> -1
-            }
-        }
-    }
-}

@@ -56,6 +56,7 @@
     <string name="sort_by_marks">Sort by marks</string>
     <string name="unknown_error">Unknown error</string>
     <string name="search">Search</string>
+    <string name="no_students_message">No students. Try to refresh page</string>
     <plurals name="plurals_marks">
         <item quantity="zero">%s points</item>
         <item quantity="one">%s point</item>

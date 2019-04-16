@@ -7,18 +7,21 @@ import android.preference.PreferenceManager
 import androidx.room.Room
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
+import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.repositories.user.prefs.SharedPrefUserRepository
+import java.util.concurrent.TimeUnit
 
-class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRepository.TokenProvider {
-
+class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRepository.TokenProvider,
+    StudentsRepository.UpdateTimeSaver {
     override fun onCreate() {
         super.onCreate()
         initUserRepositoryInstance(applicationContext)
         initHomeworkDatabase(applicationContext)
         initAuthHolder(this)
         initUserNetworkRepository(this)
+        initStudentsRepository(this, this)
     }
 
     override fun getPreferences(): SharedPreferences {
@@ -29,11 +32,21 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         return getPreferences().getString(AuthHolder.AUTH_TOKEN_ARG, null)
     }
 
+    override fun saveUpdateTime(timestamp: Long) {
+        getPreferences().edit().putLong(ARG_TIME_UPDATE, timestamp).apply()
+    }
+
+    override fun getTimeDiffInSeconds(currentTime: Long): Long {
+        val lastTimeUpdate = getPreferences().getLong(ARG_TIME_UPDATE, 0)
+        return TimeUnit.MILLISECONDS.toSeconds(currentTime - lastTimeUpdate)
+    }
+
     companion object {
         lateinit var repository: UserRepository
         lateinit var database: HomeworkDatabase
         lateinit var authHolder: AuthHolder
         lateinit var userNetworkRepository: UserNetworkRepository
+        lateinit var studentsRepository: StudentsRepository
         private fun initUserRepositoryInstance(context: Context) {
             repository = SharedPrefUserRepository(context)
         }
@@ -56,6 +69,14 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
             userNetworkRepository = UserNetworkRepository(tokenProvider)
         }
 
+        fun initStudentsRepository(
+            tokenProvider: UserNetworkRepository.TokenProvider,
+            updateTimeSaver: StudentsRepository.UpdateTimeSaver
+        ) {
+            studentsRepository = StudentsRepository(tokenProvider, updateTimeSaver)
+        }
+
         private const val DATABASE_NAME = "lectures.db"
+        private const val ARG_TIME_UPDATE = "last_time_updated"
     }
 }
