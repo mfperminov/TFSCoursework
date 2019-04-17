@@ -61,4 +61,5 @@
     </plurals>
     <string name="unknown_error">Неизвестная ошибка</string>
     <string name="no_students_message">В списке нет студентов. Попробуйте обновить страницу</string>
+    <string name="empty_lectures_message">Лекций не найдено. Попробуйте обновить страницу</string>
 </resources>
