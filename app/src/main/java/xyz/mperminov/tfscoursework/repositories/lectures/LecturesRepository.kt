@@ -12,9 +12,10 @@ import xyz.mperminov.tfscoursework.repositories.models.Lectures
 import xyz.mperminov.tfscoursework.repositories.models.Task
 import javax.inject.Inject
 
-class LecturesRepository {
-    @Inject
-    lateinit var database: HomeworkDatabase
+class LecturesRepository @Inject constructor(
+    val networkRepository: HomeworksNetworkRepository,
+    database: HomeworkDatabase
+) {
 
     init {
         TFSCourseWorkApp.appComponent.inject(this)
@@ -22,14 +23,13 @@ class LecturesRepository {
 
     private val lectureDao: LectureDao = database.lectureDao()
     private val tasksDao: TasksDao = database.tasksDao()
-    private val networkHomeworksRepository = HomeworksNetworkRepository(TFSCourseWorkApp.authHolder.getToken() ?: "")
     fun getLectures(): Single<List<Lecture>> {
         return lectureDao.getCount().subscribeOn(Schedulers.io())
             .flatMap { count -> if (count > 0) getLecturesFromDb() else fetchLecturesFromNetwork() }
     }
 
     private fun fetchLecturesFromNetwork(): Single<List<Lecture>> {
-        return networkHomeworksRepository.getLectures().firstOrError().observeOn(Schedulers.io())
+        return networkRepository.getLectures().firstOrError().observeOn(Schedulers.io())
             .flatMapCompletable { lectures ->
                 lectureDao.deleteAll()
                     .andThen(tasksDao.deleteAll())

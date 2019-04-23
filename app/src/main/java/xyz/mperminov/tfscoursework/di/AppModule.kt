@@ -2,6 +2,8 @@ package xyz.mperminov.tfscoursework.di
 
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import android.util.Log
 import androidx.room.Room
 import dagger.Module
@@ -13,6 +15,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import xyz.mperminov.tfscoursework.network.Api
+import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
@@ -67,4 +70,12 @@ object AppModule {
     @Provides
     @Singleton
     fun api(retrofit: Retrofit): Api = retrofit.create(Api::class.java)
+
+    @Provides
+    @Singleton
+    fun sharedPreferences(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+
+    @Provides
+    @Singleton
+    fun authHolder(sharedPreferences: SharedPreferences): AuthHolder = AuthHolder(sharedPreferences)
 }

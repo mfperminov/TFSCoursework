@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_lectures.*
 import xyz.mperminov.tfscoursework.R
+import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
@@ -18,6 +19,7 @@ import xyz.mperminov.tfscoursework.fragments.courses.tasks.TasksFragment
 import xyz.mperminov.tfscoursework.utils.toast
 
 class LecturesFragment : BaseChildFragment() {
+
     companion object {
         fun newInstance(): LecturesFragment {
             return LecturesFragment()
@@ -36,6 +38,7 @@ class LecturesFragment : BaseChildFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (activity?.application as TFSCourseWorkApp).initLecturesComponent()
         viewModel = ViewModelProviders.of(this).get(LecturesViewModel::class.java)
         if (savedInstanceState == null) viewModel.updateLectures()
         viewModel.result.observe(this, Observer { result ->

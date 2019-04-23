@@ -8,6 +8,9 @@ import androidx.room.Room
 import xyz.mperminov.tfscoursework.di.AppComponent
 import xyz.mperminov.tfscoursework.di.AppModule
 import xyz.mperminov.tfscoursework.di.DaggerAppComponent
+import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.DaggerLecturesComponent
+import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.LecturesComponent
+import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.LecturesModule
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
@@ -24,9 +27,13 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         appComponent = DaggerAppComponent.builder().application(this).plus(AppModule).build()
         initUserRepositoryInstance(applicationContext)
         initHomeworkDatabase(applicationContext)
-        initAuthHolder(this)
+        initAuthHolder(this, this)
         initUserNetworkRepository(this)
         initStudentsRepository(this, this)
+    }
+
+    fun initLecturesComponent() {
+        lecturesComponent = DaggerLecturesComponent.builder().plus(appComponent).plus(LecturesModule).build()
     }
 
     override fun getPreferences(): SharedPreferences {
@@ -49,6 +56,8 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
     companion object {
         @JvmStatic
         lateinit var appComponent: AppComponent
+        @JvmStatic
+        lateinit var lecturesComponent: LecturesComponent
         lateinit var repository: UserRepository
         lateinit var database: HomeworkDatabase
         lateinit var authHolder: AuthHolder
@@ -68,8 +77,11 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
                 .build()
         }
 
-        private fun initAuthHolder(prefsProvider: AuthHolder.PrefsProvider) {
-            authHolder = AuthHolder(prefsProvider)
+        private fun initAuthHolder(
+            prefsProvider: AuthHolder.PrefsProvider,
+            context: Context
+        ) {
+            authHolder = AuthHolder(PreferenceManager.getDefaultSharedPreferences(context))
         }
 
         private fun initUserNetworkRepository(tokenProvider: UserNetworkRepository.TokenProvider) {
