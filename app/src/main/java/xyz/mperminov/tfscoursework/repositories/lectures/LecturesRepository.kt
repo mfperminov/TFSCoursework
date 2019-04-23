@@ -3,16 +3,25 @@ package xyz.mperminov.tfscoursework.repositories.lectures
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
+import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import xyz.mperminov.tfscoursework.repositories.lectures.db.LectureDao
 import xyz.mperminov.tfscoursework.repositories.lectures.db.TasksDao
 import xyz.mperminov.tfscoursework.repositories.lectures.network.HomeworksNetworkRepository
 import xyz.mperminov.tfscoursework.repositories.models.Lecture
 import xyz.mperminov.tfscoursework.repositories.models.Lectures
 import xyz.mperminov.tfscoursework.repositories.models.Task
+import javax.inject.Inject
 
 class LecturesRepository {
-    private val lectureDao: LectureDao = TFSCourseWorkApp.database.lectureDao()
-    private val tasksDao: TasksDao = TFSCourseWorkApp.database.tasksDao()
+    @Inject
+    lateinit var database: HomeworkDatabase
+
+    init {
+        TFSCourseWorkApp.appComponent.inject(this)
+    }
+
+    private val lectureDao: LectureDao = database.lectureDao()
+    private val tasksDao: TasksDao = database.tasksDao()
     private val networkHomeworksRepository = HomeworksNetworkRepository(TFSCourseWorkApp.authHolder.getToken() ?: "")
     fun getLectures(): Single<List<Lecture>> {
         return lectureDao.getCount().subscribeOn(Schedulers.io())

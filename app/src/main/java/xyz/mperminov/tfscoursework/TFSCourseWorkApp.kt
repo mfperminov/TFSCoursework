@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.room.Room
+import xyz.mperminov.tfscoursework.di.AppComponent
+import xyz.mperminov.tfscoursework.di.AppModule
+import xyz.mperminov.tfscoursework.di.DaggerAppComponent
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
@@ -15,8 +18,10 @@ import java.util.concurrent.TimeUnit
 
 class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRepository.TokenProvider,
     StudentsRepository.UpdateTimeSaver {
+
     override fun onCreate() {
         super.onCreate()
+        appComponent = DaggerAppComponent.builder().application(this).plus(AppModule).build()
         initUserRepositoryInstance(applicationContext)
         initHomeworkDatabase(applicationContext)
         initAuthHolder(this)
@@ -42,6 +47,8 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
     }
 
     companion object {
+        @JvmStatic
+        lateinit var appComponent: AppComponent
         lateinit var repository: UserRepository
         lateinit var database: HomeworkDatabase
         lateinit var authHolder: AuthHolder
