@@ -18,7 +18,7 @@ class LecturesRepository @Inject constructor(
 ) {
 
     init {
-        TFSCourseWorkApp.appComponent.inject(this)
+        TFSCourseWorkApp.lecturesComponent.inject(this)
     }
 
     private val lectureDao: LectureDao = database.lectureDao()
