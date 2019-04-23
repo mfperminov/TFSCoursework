@@ -21,8 +21,10 @@ class LoginViewModel : ViewModel() {
     }
 
     fun attemptToLogin(email: String, password: String) {
-        authDisposable = loginRepository.login(email, password).doOnSubscribe { response.value = Response.Loading() }
-            .subscribe({ response.value = Response.Success() }, { e -> response.value = Response.Error(e) })
+        authDisposable = loginRepository.login(email, password)
+            .doOnSubscribe { response.value = Response.Loading() }
+            .subscribe({ response.value = Response.Success() },
+                { e -> response.value = Response.Error(e) })
     }
 }
 

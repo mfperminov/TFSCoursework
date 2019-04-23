@@ -46,18 +46,16 @@ class ProfileFragment : Fragment() {
 
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
-        with(viewModel) {
-            getUser()
-            user.observe(this@ProfileFragment, Observer { user -> updateUi(user) })
-            avatar.observe(
-                this@ProfileFragment,
-                Observer { avatarImage ->
-                    avatarImage.bitmap?.let { setAvatarImage(it) }
-                    avatarImage.e?.let {
-                        showError(it.localizedMessage)
-                    }
-                })
-        }
+        viewModel.getUser()
+        viewModel.user.observe(this@ProfileFragment, Observer { user -> updateUi(user) })
+        viewModel.avatar.observe(
+            this@ProfileFragment,
+            Observer { avatarImage ->
+                avatarImage.bitmap?.let { setAvatarImage(it) }
+                avatarImage.e?.let {
+                    showError(it.localizedMessage)
+                }
+            })
     }
 
     private fun showError(message: String) {
@@ -67,7 +65,9 @@ class ProfileFragment : Fragment() {
     private fun updateUi(user: User) {
         if (user != User.NOBODY) {
             user_info.text = user.toString()
-        } else showError(getString(R.string.error_no_info))
+        } else {
+            showError(getString(R.string.error_no_info))
+        }
     }
 
     private fun setAvatarImage(avatarImage: Bitmap) {

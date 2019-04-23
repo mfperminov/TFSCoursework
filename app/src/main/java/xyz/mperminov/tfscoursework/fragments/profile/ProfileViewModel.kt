@@ -17,6 +17,7 @@ class ProfileViewModel : ViewModel() {
     private var userDisposable: Disposable? = null
     val user = MutableLiveData<User>()
     val avatar = MutableLiveData<AvatarResult>()
+
     override fun onCleared() {
         userDisposable?.dispose()
         userDisposable = null
@@ -25,7 +26,8 @@ class ProfileViewModel : ViewModel() {
 
     fun getUser() {
         userDisposable =
-            repository.getUser().observeOn(AndroidSchedulers.mainThread())
+            repository.getUser()
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ user -> this.user.value = user; user.avatar?.let { getUserAvatar(it) } },
                     { this.user.value = User.NOBODY })
     }

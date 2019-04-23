@@ -28,9 +28,13 @@ class StudentsViewModel : ViewModel(), Filterable {
         super.onCleared()
     }
 
+    //Todo Не учитывается значение фильтра.
+    //Я вбиваю в поиск Ми происходит фильтрация, затем я обновляю с помощью PullToRefresh,
+    // зачем происходит обновление списка без учета данных в текстовом поиске.
     fun getStudents() {
         studentSchemaDisposable =
-            studentsRepository.getStudents().doOnSubscribe { result.value = Result.Loading() }
+            studentsRepository.getStudents()
+                .doOnSubscribe { result.value = Result.Loading() }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                     { students ->

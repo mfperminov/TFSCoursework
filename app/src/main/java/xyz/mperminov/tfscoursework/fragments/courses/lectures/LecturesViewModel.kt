@@ -7,12 +7,15 @@ import io.reactivex.disposables.Disposable
 import xyz.mperminov.tfscoursework.repositories.lectures.LecturesRepository
 
 class LecturesViewModel : ViewModel() {
+
     private var lecturesDisposable: Disposable? = null
     private val repository = LecturesRepository()
     val lecturesLiveData: MutableLiveData<List<LectureModelView>> = MutableLiveData()
     val result: MutableLiveData<Result> = MutableLiveData()
     fun updateLectures() {
-        lecturesDisposable = repository.getLectures().doOnSubscribe { result.value = Result.Loading() }.map {
+        lecturesDisposable = repository.getLectures()
+            .doOnSubscribe { result.value = Result.Loading() }
+            .map {
             it.map { lecture ->
                 LectureModelView(
                     lecture.id,

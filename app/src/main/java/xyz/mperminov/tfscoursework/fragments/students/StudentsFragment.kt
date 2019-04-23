@@ -193,7 +193,6 @@ class StudentsFragment : BaseChildFragment() {
 
     companion object {
         private const val KEY_LAYOUT_MANAGER = "layoutManager"
-        private const val KEY_LIST_STUDENTS = "list students"
         private const val SPAN_COUNT = 2
         @JvmStatic
         fun newInstance() = StudentsFragment()
