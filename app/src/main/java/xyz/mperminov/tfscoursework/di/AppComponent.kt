@@ -1,6 +1,7 @@
 package xyz.mperminov.tfscoursework.di
 
 import android.app.Application
+import android.content.SharedPreferences
 import dagger.BindsInstance
 import dagger.Component
 import xyz.mperminov.tfscoursework.network.Api
@@ -15,6 +16,7 @@ interface AppComponent {
     fun provideHomeWorkDatabase(): HomeworkDatabase
     fun provideAuthHolder(): AuthHolder
     fun provideApi(): Api
+    fun provideSharedPrefs(): SharedPreferences
 
     @Component.Builder
     interface Builder {

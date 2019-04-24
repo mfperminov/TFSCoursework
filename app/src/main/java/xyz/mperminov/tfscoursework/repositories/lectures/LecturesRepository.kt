@@ -13,7 +13,7 @@ import xyz.mperminov.tfscoursework.repositories.models.Task
 import javax.inject.Inject
 
 class LecturesRepository @Inject constructor(
-    val networkRepository: HomeworksNetworkRepository,
+    private val networkRepository: HomeworksNetworkRepository,
     database: HomeworkDatabase
 ) {
 

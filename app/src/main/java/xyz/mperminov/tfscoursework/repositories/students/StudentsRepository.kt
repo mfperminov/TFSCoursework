@@ -1,23 +1,29 @@
 package xyz.mperminov.tfscoursework.repositories.students
 
 import android.util.Log
+import dagger.Lazy
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
+import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
 import xyz.mperminov.tfscoursework.repositories.students.network.NetworkStudentsRepository
-import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
+import javax.inject.Inject
 
-class StudentsRepository(
-    private val tokenProvider: UserNetworkRepository.TokenProvider,
+class StudentsRepository @Inject constructor(
+    database: HomeworkDatabase,
     private val updateTimeSaver: UpdateTimeSaver
 ) {
     private val TAG = this.javaClass.simpleName
     private val CACHE_LIFETIME_SEC = 10
-    private val networkRepository: NetworkStudentsRepository by lazy {
-        NetworkStudentsRepository(tokenProvider)
+    private val studentsDao = database.studentsDao()
+    @Inject
+    lateinit var networkRepository: Lazy<NetworkStudentsRepository>
+
+    init {
+        TFSCourseWorkApp.studentComponent.inject(this)
     }
-    private val studentsDao = TFSCourseWorkApp.database.studentsDao()
+
     fun getStudents(): Single<List<Student>> {
         return studentsDao.getCount().subscribeOn(Schedulers.io())
             .flatMap { count ->
@@ -30,7 +36,7 @@ class StudentsRepository(
 
     private fun fetchStudentsFromNetwork(): Single<List<Student>> {
         Log.i(TAG, "start network synchronization")
-        return networkRepository.getStudents()
+        return networkRepository.get().getStudents()
             .flatMapCompletable { newStudents -> studentsDao.deleteAll().andThen(studentsDao.insertAll(newStudents)) }
             .doOnComplete { updateTimeSaver.saveUpdateTime(System.currentTimeMillis()) }
             .andThen(retrieveStudentsFromDb())

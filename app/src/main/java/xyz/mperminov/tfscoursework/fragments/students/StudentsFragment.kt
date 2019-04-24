@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.fragment_contact_list.*
 import xyz.mperminov.tfscoursework.R
+import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.utils.toast
@@ -38,6 +39,7 @@ class StudentsFragment : BaseChildFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        (activity?.application as TFSCourseWorkApp).initStudentComponent()
         viewModel = ViewModelProviders.of(this).get(StudentsViewModel::class.java)
         if (savedInstanceState == null) viewModel.getStudents()
         viewModel.result.observe(this, Observer { result ->

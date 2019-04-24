@@ -8,11 +8,14 @@ import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
+import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
+import javax.inject.Inject
 
 class StudentsViewModel : ViewModel(), Filterable {
+    @Inject
+    lateinit var studentsRepository: StudentsRepository
     private val TAG = this.javaClass.simpleName
-    private val studentsRepository = TFSCourseWorkApp.studentsRepository
     private var studentSchemaDisposable: Disposable? = null
     private var students: List<Student> = listOf()
         set(value) {
@@ -22,6 +25,11 @@ class StudentsViewModel : ViewModel(), Filterable {
     val studentsLiveData: MutableLiveData<List<Student>> = MutableLiveData()
     val searchQuery: MutableLiveData<CharSequence> = MutableLiveData()
     val result: MutableLiveData<Result> = MutableLiveData()
+
+    init {
+        TFSCourseWorkApp.studentComponent.inject(this)
+    }
+
     override fun onCleared() {
         studentSchemaDisposable?.dispose()
         studentSchemaDisposable = null

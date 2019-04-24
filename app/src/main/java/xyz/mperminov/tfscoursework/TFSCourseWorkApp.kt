@@ -11,16 +11,16 @@ import xyz.mperminov.tfscoursework.di.DaggerAppComponent
 import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.DaggerLecturesComponent
 import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.LecturesComponent
 import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.LecturesModule
+import xyz.mperminov.tfscoursework.fragments.students.di.DaggerStudentComponent
+import xyz.mperminov.tfscoursework.fragments.students.di.StudentComponent
+import xyz.mperminov.tfscoursework.fragments.students.di.StudentModule
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
-import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.repositories.user.prefs.SharedPrefUserRepository
-import java.util.concurrent.TimeUnit
 
-class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRepository.TokenProvider,
-    StudentsRepository.UpdateTimeSaver {
+class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRepository.TokenProvider {
 
     override fun onCreate() {
         super.onCreate()
@@ -29,11 +29,14 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         initHomeworkDatabase(applicationContext)
         initAuthHolder(this, this)
         initUserNetworkRepository(this)
-        initStudentsRepository(this, this)
     }
 
     fun initLecturesComponent() {
         lecturesComponent = DaggerLecturesComponent.builder().plus(appComponent).plus(LecturesModule).build()
+    }
+
+    fun initStudentComponent() {
+        studentComponent = DaggerStudentComponent.builder().plus(appComponent).plus(StudentModule).build()
     }
 
     override fun getPreferences(): SharedPreferences {
@@ -44,25 +47,17 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         return getPreferences().getString(AuthHolder.AUTH_TOKEN_ARG, null)
     }
 
-    override fun saveUpdateTime(timestamp: Long) {
-        getPreferences().edit().putLong(ARG_TIME_UPDATE, timestamp).apply()
-    }
-
-    override fun getTimeDiffInSeconds(currentTime: Long): Long {
-        val lastTimeUpdate = getPreferences().getLong(ARG_TIME_UPDATE, 0)
-        return TimeUnit.MILLISECONDS.toSeconds(currentTime - lastTimeUpdate)
-    }
-
     companion object {
         @JvmStatic
         lateinit var appComponent: AppComponent
         @JvmStatic
         lateinit var lecturesComponent: LecturesComponent
+        @JvmStatic
+        lateinit var studentComponent: StudentComponent
         lateinit var repository: UserRepository
         lateinit var database: HomeworkDatabase
         lateinit var authHolder: AuthHolder
         lateinit var userNetworkRepository: UserNetworkRepository
-        lateinit var studentsRepository: StudentsRepository
         private fun initUserRepositoryInstance(context: Context) {
             repository = SharedPrefUserRepository(context)
         }
@@ -86,13 +81,6 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
 
         private fun initUserNetworkRepository(tokenProvider: UserNetworkRepository.TokenProvider) {
             userNetworkRepository = UserNetworkRepository(tokenProvider)
-        }
-
-        fun initStudentsRepository(
-            tokenProvider: UserNetworkRepository.TokenProvider,
-            updateTimeSaver: StudentsRepository.UpdateTimeSaver
-        ) {
-            studentsRepository = StudentsRepository(tokenProvider, updateTimeSaver)
         }
 
         private const val DATABASE_NAME = "lectures.db"
