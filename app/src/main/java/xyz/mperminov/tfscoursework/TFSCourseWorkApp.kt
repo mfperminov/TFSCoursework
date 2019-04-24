@@ -10,22 +10,23 @@ import xyz.mperminov.tfscoursework.di.DaggerAppComponent
 import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.DaggerLecturesComponent
 import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.LecturesComponent
 import xyz.mperminov.tfscoursework.fragments.courses.lectures.di.LecturesModule
+import xyz.mperminov.tfscoursework.fragments.profile.di.DaggerProfileComponent
+import xyz.mperminov.tfscoursework.fragments.profile.di.ProfileComponent
+import xyz.mperminov.tfscoursework.fragments.profile.di.ProfileModule
 import xyz.mperminov.tfscoursework.fragments.students.di.DaggerStudentComponent
 import xyz.mperminov.tfscoursework.fragments.students.di.StudentComponent
 import xyz.mperminov.tfscoursework.fragments.students.di.StudentModule
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
-import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.repositories.user.prefs.SharedPrefUserRepository
 
-class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRepository.TokenProvider {
+class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider {
 
     override fun onCreate() {
         super.onCreate()
         appComponent = DaggerAppComponent.builder().application(this).plus(AppModule).build()
         initUserRepositoryInstance(applicationContext)
         initAuthHolder(this, this)
-        initUserNetworkRepository(this)
     }
 
     fun initLecturesComponent() {
@@ -36,12 +37,12 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         studentComponent = DaggerStudentComponent.builder().plus(appComponent).plus(StudentModule).build()
     }
 
-    override fun getPreferences(): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(this)
+    fun initProfileComponent() {
+        profileComponent = DaggerProfileComponent.builder().plus(appComponent).plus(ProfileModule).build()
     }
 
-    override fun getToken(): String? {
-        return getPreferences().getString(AuthHolder.AUTH_TOKEN_ARG, null)
+    override fun getPreferences(): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(this)
     }
 
     companion object {
@@ -51,9 +52,10 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         lateinit var lecturesComponent: LecturesComponent
         @JvmStatic
         lateinit var studentComponent: StudentComponent
+        @JvmStatic
+        lateinit var profileComponent: ProfileComponent
         lateinit var repository: UserRepository
         lateinit var authHolder: AuthHolder
-        lateinit var userNetworkRepository: UserNetworkRepository
         private fun initUserRepositoryInstance(context: Context) {
             repository = SharedPrefUserRepository(context)
         }
@@ -65,10 +67,6 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
             authHolder = AuthHolder(PreferenceManager.getDefaultSharedPreferences(context))
         }
 
-        private fun initUserNetworkRepository(tokenProvider: UserNetworkRepository.TokenProvider) {
-            userNetworkRepository = UserNetworkRepository(tokenProvider)
-        }
 
-        private const val DATABASE_NAME = "lectures.db"
     }
 }

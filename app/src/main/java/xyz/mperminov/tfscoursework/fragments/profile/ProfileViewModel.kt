@@ -11,12 +11,19 @@ import io.reactivex.disposables.Disposable
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.network.Api
+import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
+import javax.inject.Inject
 
 class ProfileViewModel : ViewModel() {
-    private val repository = TFSCourseWorkApp.userNetworkRepository
+    @Inject
+    lateinit var repository: UserNetworkRepository
     private var userDisposable: Disposable? = null
     val user = MutableLiveData<User>()
     val avatar = MutableLiveData<AvatarResult>()
+
+    init {
+        TFSCourseWorkApp.profileComponent.inject(this)
+    }
 
     override fun onCleared() {
         userDisposable?.dispose()
