@@ -18,7 +18,9 @@ import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
+import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import xyz.mperminov.tfscoursework.repositories.lectures.db.TasksDao
+import javax.inject.Inject
 
 class TasksFragment : BaseChildFragment() {
     companion object {
@@ -27,19 +29,27 @@ class TasksFragment : BaseChildFragment() {
             fragment.arguments = bundleOf(Pair(ARG_LECTURE_ID, lectureId))
             return fragment
         }
-
         const val ARG_LECTURE_ID = "lectureId"
     }
 
-    private val tasksDao: TasksDao = TFSCourseWorkApp.database.tasksDao()
+    @Inject
+    lateinit var database: HomeworkDatabase
+    private lateinit var tasksDao: TasksDao
     private lateinit var layoutManager: RecyclerView.LayoutManager
     private lateinit var layoutAdapter: TasksAdapter
     private var getTasksDisposable: Disposable? = null
     private var childFragmentsAdder: ChildFragmentsAdder? = null
+
     override fun onAttach(context: Context) {
         if (context is ChildFragmentsAdder) childFragmentsAdder = context else
             throw IllegalStateException("$context must implement ChildFragmentsAdder interface")
         super.onAttach(context)
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        TFSCourseWorkApp.appComponent.inject(this)
+        tasksDao = database.tasksDao()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

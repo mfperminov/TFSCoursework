@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
-import androidx.room.Room
 import xyz.mperminov.tfscoursework.di.AppComponent
 import xyz.mperminov.tfscoursework.di.AppModule
 import xyz.mperminov.tfscoursework.di.DaggerAppComponent
@@ -15,7 +14,6 @@ import xyz.mperminov.tfscoursework.fragments.students.di.DaggerStudentComponent
 import xyz.mperminov.tfscoursework.fragments.students.di.StudentComponent
 import xyz.mperminov.tfscoursework.fragments.students.di.StudentModule
 import xyz.mperminov.tfscoursework.network.AuthHolder
-import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import xyz.mperminov.tfscoursework.repositories.user.prefs.SharedPrefUserRepository
@@ -26,7 +24,6 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         super.onCreate()
         appComponent = DaggerAppComponent.builder().application(this).plus(AppModule).build()
         initUserRepositoryInstance(applicationContext)
-        initHomeworkDatabase(applicationContext)
         initAuthHolder(this, this)
         initUserNetworkRepository(this)
     }
@@ -55,21 +52,10 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         @JvmStatic
         lateinit var studentComponent: StudentComponent
         lateinit var repository: UserRepository
-        lateinit var database: HomeworkDatabase
         lateinit var authHolder: AuthHolder
         lateinit var userNetworkRepository: UserNetworkRepository
         private fun initUserRepositoryInstance(context: Context) {
             repository = SharedPrefUserRepository(context)
-        }
-
-        private fun initHomeworkDatabase(context: Context) {
-            database = Room.databaseBuilder(
-                context,
-                HomeworkDatabase::class.java, DATABASE_NAME
-                // понимаю, что этот метод удалит все данные при изменении версии
-                // постараюсь так не делать впредь, настрою миграцию
-            ).fallbackToDestructiveMigration()
-                .build()
         }
 
         private fun initAuthHolder(
@@ -84,6 +70,5 @@ class TFSCourseWorkApp : Application(), AuthHolder.PrefsProvider, UserNetworkRep
         }
 
         private const val DATABASE_NAME = "lectures.db"
-        private const val ARG_TIME_UPDATE = "last_time_updated"
     }
 }

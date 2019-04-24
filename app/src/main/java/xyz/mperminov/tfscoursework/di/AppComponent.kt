@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.SharedPreferences
 import dagger.BindsInstance
 import dagger.Component
+import xyz.mperminov.tfscoursework.fragments.courses.tasks.TasksFragment
 import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
@@ -17,6 +18,7 @@ interface AppComponent {
     fun provideAuthHolder(): AuthHolder
     fun provideApi(): Api
     fun provideSharedPrefs(): SharedPreferences
+    fun inject(tasksFragment: TasksFragment)
 
     @Component.Builder
     interface Builder {
