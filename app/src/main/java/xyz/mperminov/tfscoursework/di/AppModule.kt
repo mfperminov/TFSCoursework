@@ -14,6 +14,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
+import xyz.mperminov.tfscoursework.activities.LoginRepository
 import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
@@ -78,4 +79,8 @@ object AppModule {
     @Provides
     @Singleton
     fun authHolder(sharedPreferences: SharedPreferences): AuthHolder = AuthHolder(sharedPreferences)
+
+    @Provides
+    @Singleton
+    fun loginRepository(authHolder: AuthHolder): LoginRepository = LoginRepository(authHolder)
 }

@@ -2,9 +2,15 @@ package xyz.mperminov.tfscoursework.activities
 
 import io.reactivex.Completable
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
+import xyz.mperminov.tfscoursework.network.AuthHolder
+import javax.inject.Inject
 
-class LoginRepository {
-    private val authHolder = TFSCourseWorkApp.authHolder
+class LoginRepository @Inject constructor(private val authHolder: AuthHolder) {
+
+    init {
+        TFSCourseWorkApp.appComponent.inject(this)
+    }
+
     fun login(email: String, password: String): Completable {
         return authHolder.updateToken(email, password)
     }

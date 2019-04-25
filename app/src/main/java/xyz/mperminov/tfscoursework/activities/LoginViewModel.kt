@@ -3,14 +3,18 @@ package xyz.mperminov.tfscoursework.activities
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.disposables.Disposable
+import xyz.mperminov.tfscoursework.TFSCourseWorkApp
+import javax.inject.Inject
 
 class LoginViewModel : ViewModel() {
-    private val loginRepository = LoginRepository()
+    @Inject
+    lateinit var loginRepository: LoginRepository
     private var authDisposable: Disposable? = null
     val response: MutableLiveData<Response> = MutableLiveData()
     val tokenStatus: MutableLiveData<Boolean> = MutableLiveData()
 
     init {
+        TFSCourseWorkApp.appComponent.inject(this)
         tokenStatus.value = loginRepository.isTokenValid()
     }
 
