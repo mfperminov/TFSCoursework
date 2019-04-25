@@ -18,6 +18,8 @@ import xyz.mperminov.tfscoursework.activities.LoginRepository
 import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
+import xyz.mperminov.tfscoursework.repositories.user.UserRepository
+import xyz.mperminov.tfscoursework.repositories.user.prefs.SharedPrefUserRepository
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -83,4 +85,8 @@ object AppModule {
     @Provides
     @Singleton
     fun loginRepository(authHolder: AuthHolder): LoginRepository = LoginRepository(authHolder)
+
+    @Provides
+    @Singleton
+    fun userRepository(context: Context): UserRepository = SharedPrefUserRepository(context)
 }

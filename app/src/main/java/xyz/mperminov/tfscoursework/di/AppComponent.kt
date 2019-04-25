@@ -6,7 +6,9 @@ import dagger.BindsInstance
 import dagger.Component
 import xyz.mperminov.tfscoursework.activities.LoginRepository
 import xyz.mperminov.tfscoursework.activities.LoginViewModel
+import xyz.mperminov.tfscoursework.activities.MainActivity
 import xyz.mperminov.tfscoursework.fragments.courses.tasks.TasksFragment
+import xyz.mperminov.tfscoursework.fragments.profile.EditProfileFragment
 import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.lectures.db.HomeworkDatabase
@@ -21,6 +23,8 @@ interface AppComponent {
     fun provideApi(): Api
     fun provideSharedPrefs(): SharedPreferences
     fun inject(tasksFragment: TasksFragment)
+    fun inject(editProfileFragment: EditProfileFragment)
+    fun inject(mainActivity: MainActivity)
     fun inject(loginRepository: LoginRepository)
     fun inject(loginViewModel: LoginViewModel)
 

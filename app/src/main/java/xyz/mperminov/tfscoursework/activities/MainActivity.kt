@@ -20,15 +20,19 @@ import xyz.mperminov.tfscoursework.fragments.profile.ProfileFragment
 import xyz.mperminov.tfscoursework.fragments.students.StudentsFragment
 import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListener, ChildFragmentsAdder,
     ToolbarTitleSetter, StudentsFragment.OnUpSelectedHandler {
-    private val repository: UserRepository = TFSCourseWorkApp.repository
+    @Inject
+    lateinit var repository: UserRepository
+
     private var user: User? = null
     private var userDisposable: Disposable? = null
     //region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        TFSCourseWorkApp.appComponent.inject(this)
         setContentView(R.layout.activity_main)
         addItemsToBottomNav()
         nav.setOnTabSelectedListener(this)
