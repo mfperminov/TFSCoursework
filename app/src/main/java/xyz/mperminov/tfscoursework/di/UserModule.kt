@@ -1,4 +1,4 @@
-package xyz.mperminov.tfscoursework.fragments.profile.di
+package xyz.mperminov.tfscoursework.di
 
 import dagger.Module
 import dagger.Provides
@@ -7,8 +7,8 @@ import xyz.mperminov.tfscoursework.network.AuthHolder
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 
 @Module
-object ProfileModule {
+object UserModule {
     @Provides
-    @ProfileScope
+    @UserScope
     fun repository(authHolder: AuthHolder, api: Api) = UserNetworkRepository(authHolder, api)
 }

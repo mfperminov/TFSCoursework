@@ -1,29 +1,24 @@
-package xyz.mperminov.tfscoursework.fragments.profile.di
+package xyz.mperminov.tfscoursework.di
 
 import dagger.Component
-import xyz.mperminov.tfscoursework.di.AppComponent
 import xyz.mperminov.tfscoursework.fragments.profile.ProfileViewModel
+import xyz.mperminov.tfscoursework.fragments.students.di.StudentComponent
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import javax.inject.Qualifier
 import javax.inject.Scope
 
-@ProfileScope
+@UserScope
 @Component(
-    modules = [ProfileModule::class],
+    modules = [UserModule::class],
     dependencies = [AppComponent::class]
 )
-interface ProfileComponent {
+interface UserComponent {
+    fun studentComponentBuilder(): StudentComponent.Builder
     fun inject(userNetworkRepository: UserNetworkRepository)
     fun inject(viewModel: ProfileViewModel)
-    @Component.Builder
-    interface Builder {
-        fun build(): ProfileComponent
-        fun plus(profileModule: ProfileModule): Builder
-        fun plus(appComponent: AppComponent): Builder
-    }
 }
 
 @Qualifier
 @Retention(value = AnnotationRetention.RUNTIME)
 @Scope
-annotation class ProfileScope
+annotation class UserScope

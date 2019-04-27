@@ -10,11 +10,14 @@ import io.reactivex.disposables.Disposable
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
+import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import javax.inject.Inject
 
 class StudentsViewModel : ViewModel(), Filterable {
     @Inject
     lateinit var studentsRepository: StudentsRepository
+    @Inject
+    lateinit var userNetworkRepository: UserNetworkRepository
     private val TAG = this.javaClass.simpleName
     private var studentSchemaDisposable: Disposable? = null
     private var students: List<Student> = listOf()
@@ -28,6 +31,7 @@ class StudentsViewModel : ViewModel(), Filterable {
 
     init {
         TFSCourseWorkApp.studentComponent.inject(this)
+        Log.d("userRepo", "$userNetworkRepository")
     }
 
     override fun onCleared() {

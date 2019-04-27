@@ -10,7 +10,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import kotlinx.android.synthetic.main.fragment_profile.*
 import xyz.mperminov.tfscoursework.R
-import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.models.User
@@ -25,11 +24,6 @@ class ProfileFragment : Fragment() {
         }
 
         const val TAG = "PROFILE_FRAGMENT"
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        (activity?.application as TFSCourseWorkApp).initProfileComponent()
     }
 
     override fun onCreateView(
