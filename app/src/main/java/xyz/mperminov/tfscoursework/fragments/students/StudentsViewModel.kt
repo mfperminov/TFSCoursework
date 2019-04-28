@@ -38,7 +38,6 @@ class StudentsViewModel : ViewModel(), Filterable {
 
     init {
         TFSCourseWorkApp.studentComponent.inject(this)
-        Log.d("userRepo", "$userNetworkRepository")
     }
 
     override fun onCleared() {
