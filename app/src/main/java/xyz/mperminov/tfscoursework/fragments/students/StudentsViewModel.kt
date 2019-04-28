@@ -1,5 +1,6 @@
 package xyz.mperminov.tfscoursework.fragments.students
 
+import android.content.Context
 import android.util.Log
 import android.widget.Filter
 import android.widget.Filterable
@@ -7,7 +8,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
+import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
@@ -18,7 +21,11 @@ class StudentsViewModel : ViewModel(), Filterable {
     lateinit var studentsRepository: StudentsRepository
     @Inject
     lateinit var userNetworkRepository: UserNetworkRepository
+    @Inject
+    lateinit var context: Context
+    private val MARK_THRESHOLD: Double = 20.0
     private val TAG = this.javaClass.simpleName
+    private var user: User? = null
     private var studentSchemaDisposable: Disposable? = null
     private var students: List<Student> = listOf()
         set(value) {
@@ -44,23 +51,34 @@ class StudentsViewModel : ViewModel(), Filterable {
     //Я вбиваю в поиск Ми происходит фильтрация, затем я обновляю с помощью PullToRefresh,
     // зачем происходит обновление списка без учета данных в текстовом поиске.
     fun getStudents() {
-        studentSchemaDisposable =
-            studentsRepository.getStudents()
-                .doOnSubscribe { result.value = Result.Loading() }
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(
-                    { students ->
-                        if (students.isEmpty()) {
-                            result.value = Result.Empty()
-                        } else {
-                            this.students = students
-                            result.value = Result.Success()
-                        }
-                    },
-                    { e ->
-                        Log.e(TAG, e.localizedMessage)
-                        result.value = Result.Error(e)
-                    })
+        studentSchemaDisposable = userNetworkRepository.getUser()
+            .doOnSuccess { user -> this.user = user }
+            .flatMap { studentsRepository.getStudents() }
+            .doOnSubscribe { result.value = Result.Loading() }
+            .flattenAsObservable { it }
+            .filter { student -> student.mark > MARK_THRESHOLD }
+            .map { student ->
+                if (student.name == "${this.user?.lastName} ${this.user?.firstName}") return@map Student(
+                    student.id,
+                    context.getString(R.string.you),
+                    student.mark
+                ) else student
+            }
+            .toList()
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { students ->
+                    if (students.isEmpty()) {
+                        result.value = Result.Empty()
+                    } else {
+                        this.students = students
+                        result.value = Result.Success()
+                    }
+                },
+                { e ->
+                    Log.e(TAG, e.localizedMessage)
+                    result.value = Result.Error(e)
+                })
     }
 
     fun sortStudentsByMarks() {
