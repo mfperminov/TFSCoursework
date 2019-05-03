@@ -6,6 +6,7 @@ import xyz.mperminov.tfscoursework.fragments.activitites.archive.ArchiveActiviti
 import xyz.mperminov.tfscoursework.fragments.profile.ProfileViewModel
 import xyz.mperminov.tfscoursework.fragments.students.di.StudentComponent
 import xyz.mperminov.tfscoursework.repositories.activities.ActivitiesNetworkRepository
+import xyz.mperminov.tfscoursework.repositories.activities.ArchiveRepository
 import xyz.mperminov.tfscoursework.repositories.user.network.UserNetworkRepository
 import javax.inject.Qualifier
 import javax.inject.Scope
@@ -20,6 +21,7 @@ interface UserComponent {
     fun inject(userNetworkRepository: UserNetworkRepository)
     fun inject(viewModel: ProfileViewModel)
     fun inject(activitiesNetworkRepository: ActivitiesNetworkRepository)
+    fun inject(archiveRepository: ArchiveRepository)
     fun inject(activitiesFragment: ActivitiesFragment)
     fun inject(viewModel: ArchiveActivitiesViewModel)
 }

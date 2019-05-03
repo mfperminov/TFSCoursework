@@ -1,6 +1,8 @@
 package xyz.mperminov.tfscoursework.repositories.activities
 
 import android.util.Log
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import io.reactivex.Single
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
@@ -11,8 +13,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
-class ActivitiesNetworkRepository @Inject constructor(private val api: Api, private val authHolder: AuthHolder) {
+class ActivitiesNetworkRepository @Inject constructor(
+    private val api: Api,
+    private val authHolder: AuthHolder
+) {
     private val mapper = ActivitiesMapper()
+
 
     init {
         TFSCourseWorkApp.userComponent.inject(this)
@@ -35,7 +41,8 @@ class ActivitiesNetworkRepository @Inject constructor(private val api: Api, priv
     }
 }
 
-data class Archive(val title: String, val eventType: EventType, val place: String, val dateEnd: Date) {
+@Entity(tableName = "archive")
+data class Archive(@PrimaryKey val title: String, val eventType: EventType, val place: String, val dateEnd: Date) {
     companion object {
         val NOTHING = Archive("", EventType.DEFAULT, "", Date())
     }

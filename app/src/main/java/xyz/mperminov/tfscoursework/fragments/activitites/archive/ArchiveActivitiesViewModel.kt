@@ -2,15 +2,16 @@ package xyz.mperminov.tfscoursework.fragments.activitites.archive
 
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.base.BaseViewModel
-import xyz.mperminov.tfscoursework.repositories.activities.ActivitiesNetworkRepository
 import xyz.mperminov.tfscoursework.repositories.activities.Archive
+import xyz.mperminov.tfscoursework.repositories.activities.ArchiveRepository
 import javax.inject.Inject
 
 class ArchiveActivitiesViewModel : BaseViewModel() {
     @Inject
-    lateinit var repository: ActivitiesNetworkRepository
+    lateinit var repository: ArchiveRepository
     val activitiesLiveData: MutableLiveData<Result<Archive>> = MutableLiveData()
 
     init {
@@ -18,7 +19,8 @@ class ArchiveActivitiesViewModel : BaseViewModel() {
     }
 
     fun getActivities() {
-        val d = repository.getArchive().doOnSubscribe { activitiesLiveData.value = Result.Loading() }
+        val d = repository.getArchive().subscribeOn(Schedulers.io())
+            .doOnSubscribe { activitiesLiveData.value = Result.Loading() }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ list ->
                 if (list.isEmpty()) {
