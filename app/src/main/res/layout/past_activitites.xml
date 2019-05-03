@@ -13,7 +13,9 @@
         <LinearLayout
             android:id="@+id/past_activities_header_layout"
             android:layout_width="match_parent"
+            android:gravity="center"
             android:layout_height="wrap_content"
+            android:minHeight="48dp"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:focusable="true"
@@ -46,13 +48,13 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:gravity="end"
-                android:text="@string/details"
                 android:textSize="16sp" />
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/rv_past_activities"
             android:layout_width="match_parent"
+            android:clipToPadding="false"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"

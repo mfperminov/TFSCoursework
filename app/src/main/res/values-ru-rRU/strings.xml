@@ -68,4 +68,10 @@
     <string name="please_correct_password">Пожалуйста, введите пароль</string>
     <string name="fintech_school_logo">Логотип Тинькоф Финтех школы</string>
     <string name="past_activities_label">Прошедшие</string>
+    <string name="schoolchildren">Школьникам</string>
+    <string name="internship">Стажировка</string>
+    <string name="activity">Мероприятие</string>
+    <string name="spec_course">Спецкурс</string>
+    <string name="fintech">Финтех школа</string>
+    <string name="activities_count">Все %d</string>
 </resources>

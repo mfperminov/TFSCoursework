@@ -69,4 +69,10 @@
     <string name="please_correct_password">Please enter non-empty password</string>
     <string name="fintech_school_logo">Fintech school logo</string>
     <string name="past_activities_label">Past</string>
+    <string name="schoolchildren">Schoolchildren</string>
+    <string name="internship">Internship</string>
+    <string name="activity">Activity</string>
+    <string name="spec_course">Special course</string>
+    <string name="fintech">Fintech school</string>
+    <string name="activities_count">All %d</string>
 </resources>
