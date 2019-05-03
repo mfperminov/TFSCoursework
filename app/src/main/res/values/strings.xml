@@ -63,4 +63,5 @@
         <item quantity="one">%s point</item>
         <item quantity="other">%s points</item>
     </plurals>
+    <string name="you">You</string>
 </resources>

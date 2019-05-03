@@ -22,7 +22,7 @@ class ProfileViewModel : ViewModel() {
     val avatar = MutableLiveData<AvatarResult>()
 
     init {
-        TFSCourseWorkApp.profileComponent.inject(this)
+        TFSCourseWorkApp.userComponent.inject(this)
     }
 
     override fun onCleared() {
