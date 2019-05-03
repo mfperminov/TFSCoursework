@@ -9,4 +9,5 @@
     <color name="color_course_done">#6CD6A2</color>
     <color name="color_profile_selection">#FFDD2D</color>
     <color name="color_item_decoration">#FF3F</color>
+    <color name="login_back">#3e4757</color>
 </resources>

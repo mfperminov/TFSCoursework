@@ -65,4 +65,7 @@
     </plurals>
     <string name="you">You</string>
     <string name="student_search">Student search</string>
+    <string name="please_correct_email">Please enter correct e-mail</string>
+    <string name="please_correct_password">Please enter non-empty password</string>
+    <string name="fintech_school_logo">Fintech school logo</string>
 </resources>

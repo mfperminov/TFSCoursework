@@ -29,6 +29,13 @@ fun EditText.validate(validator: (String) -> Boolean,textInputLayout: TextInputL
     textInputLayout.error = if (validator(this.text.toString())) null else message
 }
 
+fun EditText.validate(validator: (String) -> Boolean, editText: EditText, message: String) {
+    this.afterTextChanged {
+        editText.error = if (validator(it)) null else message
+    }
+    editText.error = if (validator(this.text.toString())) null else message
+}
+
 fun Context.toast(message: CharSequence) =
     Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
 
