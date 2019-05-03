@@ -74,4 +74,5 @@
     <string name="spec_course">Спецкурс</string>
     <string name="fintech">Финтех школа</string>
     <string name="activities_count">Все %d</string>
+    <string name="no_past_events">Прошедших мероприятий не найдено</string>
 </resources>

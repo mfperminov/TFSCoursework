@@ -27,16 +27,39 @@ class ArchiveActivitiesFragment : Fragment() {
             viewModel.getActivities()
         }
         viewModel.activitiesLiveData.observe(this, Observer { result ->
+            invalidateState()
             when (result) {
                 is Result.Success<Archive> -> {
-                    (rv_past_activities.adapter as RecyclerViewArchiveAdapter).swapData(result.data)
+                    (rv_archive_activities.adapter as RecyclerViewArchiveAdapter).swapData(result.data)
                     updateHeader(result.data.size)
                 }
-                is Result.Error<Archive> -> context?.toast(result.e!!.localizedMessage)
-                is Result.Empty<Archive> -> context?.toast("Empty")
-                is Result.Loading<Archive> -> context?.toast("Loading")
+                is Result.Error<Archive> -> showError(result.e!!)
+                is Result.Empty<Archive> -> showEmptyState()
+                is Result.Loading<Archive> -> showProgress()
             }
         })
+        swipe_refresh_archive.setOnRefreshListener { viewModel.getActivities() }
+    }
+
+    private fun showEmptyState() {
+        context?.toast(getString(R.string.no_past_events))
+        rv_archive_activities.visibility = View.GONE
+        empty_state_archive.visibility = View.VISIBLE
+    }
+
+    private fun invalidateState() {
+        swipe_refresh_archive.isRefreshing = false
+        caption_details.text = ""
+        rv_archive_activities.visibility = View.VISIBLE
+        empty_state_archive.visibility = View.GONE
+    }
+
+    private fun showError(e: Throwable) {
+        context?.toast(e.localizedMessage)
+    }
+
+    private fun showProgress() {
+        swipe_refresh_archive.isRefreshing = true
     }
 
     private fun updateHeader(size: Int) {
@@ -44,8 +67,8 @@ class ArchiveActivitiesFragment : Fragment() {
     }
 
     private fun initRecyclerView() {
-        rv_past_activities.layoutManager = LinearLayoutManager(context)
+        rv_archive_activities.layoutManager = LinearLayoutManager(context)
         val adapter = RecyclerViewArchiveAdapter()
-        rv_past_activities.adapter = adapter
+        rv_archive_activities.adapter = adapter
     }
 }

@@ -18,7 +18,7 @@ class ArchiveActivitiesViewModel : BaseViewModel() {
     }
 
     fun getActivities() {
-        val d = repository.getArchive().doOnSubscribe { activitiesLiveData.value = Result.Loading<Archive>() }
+        val d = repository.getArchive().doOnSubscribe { activitiesLiveData.value = Result.Loading() }
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ list ->
                 if (list.isEmpty()) {
