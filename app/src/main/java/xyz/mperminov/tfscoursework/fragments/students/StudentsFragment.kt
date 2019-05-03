@@ -14,6 +14,7 @@ import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
+import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.utils.toast
 
 class StudentsFragment : BaseChildFragment() {
@@ -54,7 +55,14 @@ class StudentsFragment : BaseChildFragment() {
     }
 
     private fun showEmptyState() {
-        context?.toast(getString(R.string.no_students_message))
+        hideProgress()
+        img_empty_state.visibility = View.VISIBLE
+        empty_state_message.visibility = View.VISIBLE
+    }
+
+    private fun hideEmptyState() {
+        img_empty_state.visibility = View.GONE
+        empty_state_message.visibility = View.GONE
     }
 
     override fun onCreateView(
@@ -66,7 +74,7 @@ class StudentsFragment : BaseChildFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         currentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER
-
+        (activity as ToolbarTitleSetter).setTitle(getString(R.string.progress))
         if (savedInstanceState != null) {
             currentLayoutManagerType = savedInstanceState
                 .getSerializable(KEY_LAYOUT_MANAGER) as LayoutManagerType
@@ -85,15 +93,18 @@ class StudentsFragment : BaseChildFragment() {
     }
 
     private fun showSuccess() {
+        hideEmptyState()
         hideProgress()
     }
 
     private fun showError(message: String) {
+        hideEmptyState()
         hideProgress()
         context?.toast(message)
     }
 
     private fun showProgress() {
+        hideEmptyState()
         swipe_refresh.isRefreshing = true
     }
 
@@ -119,6 +130,7 @@ class StudentsFragment : BaseChildFragment() {
 
     private fun setSearchView(menu: Menu) {
         searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView.queryHint = getString(R.string.student_search)
         if (!viewModel.searchQuery.value.isNullOrEmpty()) {
             searchView.setQuery(viewModel.searchQuery.value, false)
             searchView.isIconified = false

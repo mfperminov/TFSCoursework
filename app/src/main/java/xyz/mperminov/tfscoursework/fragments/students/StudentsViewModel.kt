@@ -31,6 +31,7 @@ class StudentsViewModel : ViewModel(), Filterable {
         set(value) {
             field = value
             studentsLiveData.value = value
+            if (!searchQuery.value.isNullOrEmpty()) filter.filter(searchQuery.value!!)
         }
     val studentsLiveData: MutableLiveData<List<Student>> = MutableLiveData()
     val searchQuery: MutableLiveData<CharSequence> = MutableLiveData()
@@ -46,9 +47,6 @@ class StudentsViewModel : ViewModel(), Filterable {
         super.onCleared()
     }
 
-    //Todo Не учитывается значение фильтра.
-    //Я вбиваю в поиск Ми происходит фильтрация, затем я обновляю с помощью PullToRefresh,
-    // зачем происходит обновление списка без учета данных в текстовом поиске.
     fun getStudents() {
         studentSchemaDisposable = userNetworkRepository.getUser()
             .doOnSuccess { user -> this.user = user }
@@ -59,7 +57,7 @@ class StudentsViewModel : ViewModel(), Filterable {
             .map { student ->
                 if (student.name == "${this.user?.lastName} ${this.user?.firstName}") return@map Student(
                     student.id,
-                    context.getString(R.string.you),
+                    "${student.name} (${context.getString(R.string.you)})",
                     student.mark
                 ) else student
             }
@@ -70,9 +68,9 @@ class StudentsViewModel : ViewModel(), Filterable {
                     if (students.isEmpty()) {
                         result.value = Result.Empty()
                     } else {
-                        this.students = students
                         result.value = Result.Success()
                     }
+                    this.students = students
                 },
                 { e ->
                     Log.e(TAG, e.localizedMessage)

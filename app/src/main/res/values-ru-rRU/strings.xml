@@ -63,4 +63,5 @@
     <string name="no_students_message">В списке нет студентов. Попробуйте обновить страницу</string>
     <string name="empty_lectures_message">Лекций не найдено. Попробуйте обновить страницу</string>
     <string name="you">Вы</string>
+    <string name="student_search">Поиск студента</string>
 </resources>

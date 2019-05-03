@@ -64,4 +64,5 @@
         <item quantity="other">%s points</item>
     </plurals>
     <string name="you">You</string>
+    <string name="student_search">Student search</string>
 </resources>
