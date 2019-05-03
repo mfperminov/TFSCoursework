@@ -67,4 +67,5 @@
     <string name="please_correct_email">Пожалуйста, введите корректный e-mail</string>
     <string name="please_correct_password">Пожалуйста, введите пароль</string>
     <string name="fintech_school_logo">Логотип Тинькоф Финтех школы</string>
+    <string name="past_activities_label">Прошедшие</string>
 </resources>

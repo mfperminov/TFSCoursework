@@ -8,7 +8,8 @@ import xyz.mperminov.tfscoursework.repositories.lectures.HomeworksRepository
 import xyz.mperminov.tfscoursework.repositories.models.Lectures
 import javax.inject.Inject
 
-class HomeworksNetworkRepository @Inject constructor(val api: Api, val authHolder: AuthHolder) : HomeworksRepository {
+class HomeworksNetworkRepository @Inject constructor(private val api: Api, private val authHolder: AuthHolder) :
+    HomeworksRepository {
 
     init {
         TFSCourseWorkApp.lecturesComponent.inject(this)

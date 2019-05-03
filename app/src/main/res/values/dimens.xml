@@ -9,4 +9,5 @@
     <dimen name="avatar_size">128dp</dimen>
     <dimen name="empty_img_default">200dp</dimen>
     <dimen name="login_form_height">56dp</dimen>
+    <dimen name="list_item_default_height">56dp</dimen>
 </resources>
