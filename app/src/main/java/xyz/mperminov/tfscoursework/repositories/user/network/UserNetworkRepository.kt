@@ -12,7 +12,7 @@ import javax.inject.Inject
 class UserNetworkRepository @Inject constructor(private val authHolder: AuthHolder, private val api: Api) :
     UserRepository {
     init {
-        TFSCourseWorkApp.profileComponent.inject(this)
+        TFSCourseWorkApp.userComponent.inject(this)
     }
 
     override fun getUser(): Single<User> {

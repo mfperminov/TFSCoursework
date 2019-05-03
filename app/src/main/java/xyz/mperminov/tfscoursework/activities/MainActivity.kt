@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         TFSCourseWorkApp.appComponent.inject(this)
+        (application as TFSCourseWorkApp).initUserComponent()
         setContentView(R.layout.activity_main)
         addItemsToBottomNav()
         nav.setOnTabSelectedListener(this)

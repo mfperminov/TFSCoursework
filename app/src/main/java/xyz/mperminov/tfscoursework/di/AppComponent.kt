@@ -1,6 +1,7 @@
 package xyz.mperminov.tfscoursework.di
 
 import android.app.Application
+import android.content.Context
 import android.content.SharedPreferences
 import dagger.BindsInstance
 import dagger.Component
@@ -21,6 +22,7 @@ interface AppComponent {
     fun provideHomeWorkDatabase(): HomeworkDatabase
     fun provideAuthHolder(): AuthHolder
     fun provideApi(): Api
+    fun provideContext(): Context
     fun provideSharedPrefs(): SharedPreferences
     fun inject(tasksFragment: TasksFragment)
     fun inject(editProfileFragment: EditProfileFragment)
