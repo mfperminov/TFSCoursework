@@ -23,7 +23,6 @@ class StudentsViewModel : ViewModel(), Filterable {
     lateinit var userNetworkRepository: UserNetworkRepository
     @Inject
     lateinit var context: Context
-    private val MARK_THRESHOLD: Double = 20.0
     private val TAG = this.javaClass.simpleName
     private var user: User? = null
     private var studentSchemaDisposable: Disposable? = null
@@ -53,7 +52,6 @@ class StudentsViewModel : ViewModel(), Filterable {
             .flatMap { studentsRepository.getStudents() }
             .doOnSubscribe { result.value = Result.Loading() }
             .flattenAsObservable { it }
-            .filter { student -> student.mark > MARK_THRESHOLD }
             .map { student ->
                 if (student.name == "${this.user?.lastName} ${this.user?.firstName}") return@map Student(
                     student.id,
