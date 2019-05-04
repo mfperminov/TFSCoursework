@@ -1,6 +1,8 @@
 package xyz.mperminov.tfscoursework.fragments.students.di
 
 import dagger.Subcomponent
+import xyz.mperminov.tfscoursework.fragments.courses.CourseInfoActivity
+import xyz.mperminov.tfscoursework.fragments.courses.CoursesViewModel
 import xyz.mperminov.tfscoursework.fragments.courses.ProgressViewModel
 import xyz.mperminov.tfscoursework.fragments.students.StudentsViewModel
 import xyz.mperminov.tfscoursework.repositories.students.StudentsRepository
@@ -17,6 +19,8 @@ interface StudentComponent {
     fun inject(repository: StudentsRepository)
     fun inject(viewModel: StudentsViewModel)
     fun inject(progressViewModel: ProgressViewModel)
+    fun inject(coursesViewModel: CoursesViewModel)
+    fun inject(courseInfoActivity: CourseInfoActivity)
     @Subcomponent.Builder
     interface Builder {
         fun build(): StudentComponent

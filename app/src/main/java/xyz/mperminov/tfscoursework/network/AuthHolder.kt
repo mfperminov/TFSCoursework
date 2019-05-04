@@ -7,7 +7,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import xyz.mperminov.tfscoursework.network.RestClient.apiLogin
 import javax.inject.Inject
 
-class AuthHolder @Inject constructor(val sharedPreferences: SharedPreferences) {
+class AuthHolder @Inject constructor(private val sharedPreferences: SharedPreferences) {
 
     companion object {
         val AUTH_TOKEN_ARG = "auth_token"
@@ -27,10 +27,6 @@ class AuthHolder @Inject constructor(val sharedPreferences: SharedPreferences) {
     fun updateToken(email: String, password: String): Completable {
         return apiLogin.updateToken(AuthRequest(email, password)).observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { saveToken() }
-    }
-
-    interface PrefsProvider {
-        fun getPreferences(): SharedPreferences
     }
 }
 

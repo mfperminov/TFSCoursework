@@ -6,6 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import xyz.mperminov.tfscoursework.repositories.activities.ActivitiesResponce
 import xyz.mperminov.tfscoursework.repositories.models.Lectures
+import xyz.mperminov.tfscoursework.repositories.students.ConnectionResponse
 import xyz.mperminov.tfscoursework.repositories.students.network.StudentSchema
 import xyz.mperminov.tfscoursework.repositories.user.network.UserSchema
 
@@ -23,6 +24,9 @@ interface Api {
 
     @GET("course/android_spring_2019/grades")
     fun getStudents(@Header("Cookie") sessionToken: String): Observable<List<StudentSchema>>
+
+    @GET("connections")
+    fun getCourses(@Header("Cookie") sessionToken: String): Single<ConnectionResponse>
 
     @GET("calendar/list/event")
     fun getActivities(@Header("Cookie") sessionToken: String): Single<ActivitiesResponce>

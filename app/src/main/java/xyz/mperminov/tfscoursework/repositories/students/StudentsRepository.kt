@@ -34,6 +34,10 @@ class StudentsRepository @Inject constructor(
             }
     }
 
+    fun getCourses(): Single<CourseResponse> {
+        return networkRepository.get().getCourses().map { it -> it.courses[0] }
+    }
+
     private fun fetchStudentsFromNetwork(): Single<List<Student>> {
         Log.i(TAG, "start network synchronization")
         return networkRepository.get().getStudents()

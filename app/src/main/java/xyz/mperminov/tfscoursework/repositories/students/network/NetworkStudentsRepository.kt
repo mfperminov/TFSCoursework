@@ -4,6 +4,7 @@ import io.reactivex.Single
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.network.Api
 import xyz.mperminov.tfscoursework.network.AuthHolder
+import xyz.mperminov.tfscoursework.repositories.students.ConnectionResponse
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
 import xyz.mperminov.tfscoursework.repositories.students.db.StudentMapper
 import javax.inject.Inject
@@ -23,5 +24,12 @@ class NetworkStudentsRepository @Inject constructor(
         return if (token != null)
             api.getStudents(token).firstOrError().map { list -> mapper.mapToDbModel(list) }
         else Single.just(emptyList())
+    }
+
+    fun getCourses(): Single<ConnectionResponse> {
+        val token = authHolder.getToken()
+        return if (token != null)
+            api.getCourses(token)
+        else Single.error<ConnectionResponse>(Throwable("No auth token provided"))
     }
 }
