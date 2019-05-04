@@ -1,10 +1,12 @@
 package xyz.mperminov.tfscoursework.fragments.courses
 
+import android.content.Context
 import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
+import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.activitites.archive.Result
 import xyz.mperminov.tfscoursework.fragments.base.BaseViewModel
@@ -19,6 +21,8 @@ class ProgressViewModel : BaseViewModel() {
     lateinit var studentsRepository: StudentsRepository
     @Inject
     lateinit var userNetworkRepository: UserNetworkRepository
+    @Inject
+    lateinit var context: Context
     val topStudents: MutableLiveData<Result<Student>> = MutableLiveData()
     val userRating: MutableLiveData<ratingOverall> = MutableLiveData()
     val userMark: MutableLiveData<Int> = MutableLiveData()
@@ -30,12 +34,22 @@ class ProgressViewModel : BaseViewModel() {
     }
 
     fun getTopStudents(size: Long) {
-        val d = studentsRepository.getStudents()
+        val d = userNetworkRepository.getUser().flatMap { user -> this.user = user; studentsRepository.getStudents() }
             .doOnSubscribe { handler.sendMessage(handler.obtainMessage(1, Result.Loading<Student>())) }
             .subscribeOn(Schedulers.computation())
             .flattenAsObservable { it }
             .sorted { s1, s2 -> (s2.mark - s1.mark).toInt() }
             .take(size)
+            .map { student ->
+                if (student.name == "${this.user.lastName} ${this.user.firstName}") {
+                    Student(
+                        student.id, "${student.name} (${context.getString(
+                            R.string.you
+                        )})", student.mark, true
+                    )
+                } else
+                    student
+            }
             .toList()
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({ list ->
@@ -57,7 +71,7 @@ class ProgressViewModel : BaseViewModel() {
                 list.forEachIndexed { index, student ->
                     if (student.name == "${this.user.lastName} ${this.user.firstName}") {
                         userRating.value =
-                            ratingOverall(index, list.size)
+                            ratingOverall(index + 1, list.size)
                         userMark.value = student.mark.toInt()
                     }
                 }

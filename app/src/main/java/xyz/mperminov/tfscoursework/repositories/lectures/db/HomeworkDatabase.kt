@@ -12,7 +12,7 @@ import xyz.mperminov.tfscoursework.repositories.models.Task
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
 import xyz.mperminov.tfscoursework.repositories.students.db.StudentsDao
 
-@Database(entities = [Lecture::class, Task::class, Student::class, Archive::class], version = 3, exportSchema = false)
+@Database(entities = [Lecture::class, Task::class, Student::class, Archive::class], version = 4, exportSchema = false)
 @TypeConverters(DateTypeConverter::class, EventTypeConverter::class)
 abstract class HomeworkDatabase : RoomDatabase() {
     abstract fun lectureDao(): LectureDao

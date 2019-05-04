@@ -9,7 +9,11 @@ import xyz.mperminov.tfscoursework.utils.round
 
 @Entity(tableName = "students")
 @Parcelize
-data class Student(@PrimaryKey val id: Int, val name: String, val mark: Double) : Parcelable {
+data class Student(
+    @PrimaryKey val id: Int, val name: String,
+    val mark: Double,
+    val userProfile: Boolean
+) : Parcelable {
     private fun collectLastNameAndName(): List<String> {
         return name.split("\\s".toRegex(), 2)
     }
@@ -21,7 +25,7 @@ data class Student(@PrimaryKey val id: Int, val name: String, val mark: Double) 
     }
 
     companion object {
-        val NOBODY = Student(0, "", 0.0)
+        val NOBODY = Student(0, "", 0.0, false)
     }
 }
 
@@ -38,7 +42,8 @@ class StudentMapper {
                 Student(
                     grade.studentId!!,
                     grade.student!!,
-                    mark
+                    mark,
+                    false
                 )
             }
         return students ?: emptyList()

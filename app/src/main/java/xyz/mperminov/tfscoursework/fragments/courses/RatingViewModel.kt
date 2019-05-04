@@ -58,7 +58,9 @@ class RatingViewModel : BaseViewModel() {
                     ratingOverall(filteredList.filter { it.status == TASK_STATUS_ACCEPTED }.size, filteredList.size)
             },
                 { e ->
-                    homeworkLiveData.value = ratingOverall(0, 0); Log.e("RatingViewModel", e.message)
+                    homeworkLiveData.value =
+                        ratingOverall(0, 0)
+                    Log.e("RatingViewModel", e.message)
                 })
         compositeDisposable.add(d)
     }

@@ -24,9 +24,9 @@ class RatingFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(RatingViewModel::class.java)
         progressViewModel = ViewModelProviders.of(this).get(ProgressViewModel::class.java)
         if (savedInstanceState == null) {
-            progressViewModel.getUserProgress()
             viewModel.getTestsRating()
             viewModel.getHomeworkRating()
+            progressViewModel.getUserProgress()
         }
         super.onCreate(savedInstanceState)
     }

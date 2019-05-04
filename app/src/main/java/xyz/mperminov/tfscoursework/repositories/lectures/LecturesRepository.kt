@@ -25,11 +25,11 @@ class LecturesRepository @Inject constructor(
     private val tasksDao: TasksDao = database.tasksDao()
     fun getLectures(): Single<List<Lecture>> {
         return lectureDao.getCount().subscribeOn(Schedulers.io())
-            .flatMap { count -> if (count > 0) getLecturesFromDb() else fetchLecturesFromNetwork() }
+            .flatMap { count -> if (count > 0) fetchLecturesFromNetwork() else fetchLecturesFromNetwork() }
     }
 
     private fun fetchLecturesFromNetwork(): Single<List<Lecture>> {
-        return networkRepository.getLectures().firstOrError().observeOn(Schedulers.io())
+        return networkRepository.getLectures().firstOrError().subscribeOn(Schedulers.io())
             .flatMapCompletable { lectures ->
                 lectureDao.deleteAll()
                     .andThen(tasksDao.deleteAll())

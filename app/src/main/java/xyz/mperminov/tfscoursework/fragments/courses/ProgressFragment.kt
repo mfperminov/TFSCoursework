@@ -80,6 +80,7 @@ class ProgressFragment : Fragment(), BadgeUpdateCallback {
             val profileView = ProfileView(context!!)
             profileView.setName(students[i].getFirstName())
             profileView.setBadge(students[i].mark.toInt())
+            if (students[i].userProfile) profileView.enableBorder() else profileView.disableBorder()
             profiles_container.addView(profileView)
         }
     }

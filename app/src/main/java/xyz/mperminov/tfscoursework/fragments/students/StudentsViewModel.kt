@@ -56,7 +56,8 @@ class StudentsViewModel : ViewModel(), Filterable {
                 if (student.name == "${this.user?.lastName} ${this.user?.firstName}") return@map Student(
                     student.id,
                     "${student.name} (${context.getString(R.string.you)})",
-                    student.mark
+                    student.mark,
+                    false
                 ) else student
             }
             .toList()

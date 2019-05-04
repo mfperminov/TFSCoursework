@@ -27,6 +27,7 @@ data class Task(
     var mark: String = "",
     var status: String = "",
     @Embedded
+    @SerializedName("task")
     var taskDetails: TaskDetails = TaskDetails()
 )
 
