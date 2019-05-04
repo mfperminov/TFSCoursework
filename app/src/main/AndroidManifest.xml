@@ -29,7 +29,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".fragments.courses.CourseInfoActivity" />
+        <activity
+            android:name=".fragments.courses.CourseInfoActivity"
+            android:theme="@style/AppTheme" />
 
         <service android:name=".services.ContactService" />
     </application>

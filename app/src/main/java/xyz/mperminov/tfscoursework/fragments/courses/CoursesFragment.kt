@@ -16,10 +16,13 @@ import xyz.mperminov.tfscoursework.repositories.students.CourseResponse
 
 class CoursesFragment : Fragment() {
     private lateinit var viewModel: CoursesViewModel
+    private var courseTitle: String = ""
+
     companion object {
         fun newInstance(): CoursesFragment {
             return CoursesFragment()
         }
+
         const val TAG = "COURSES_FRAGMENT"
         const val webViewUrl = "https://fintech.tinkoff.ru/api/course/%s/about"
     }
@@ -39,7 +42,10 @@ class CoursesFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.courses))
-        viewModel.courseinfo.observe(this, Observer { it -> updateUi(it) })
+        viewModel.courseinfo.observe(
+            this,
+            Observer { it -> updateUi(it); courseTitle = it?.title ?: "" }
+        )
     }
 
     private fun updateUi(response: CourseResponse?) {
@@ -58,6 +64,7 @@ class CoursesFragment : Fragment() {
                 "url",
                 String.format(webViewUrl, url)
             )
+            putExtra("descr", courseTitle)
         })
     }
 
