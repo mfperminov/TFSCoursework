@@ -27,7 +27,7 @@ data class Task(
     var mark: String = "",
     var status: String = "",
     @Embedded
-    var task: TaskDetails = TaskDetails()
+    var taskDetails: TaskDetails = TaskDetails()
 )
 
 data class TaskDetails(

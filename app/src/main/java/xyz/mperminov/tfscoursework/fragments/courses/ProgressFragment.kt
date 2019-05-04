@@ -60,7 +60,7 @@ class ProgressFragment : Fragment(), BadgeUpdateCallback {
         })
     }
 
-    fun updateBadges(students: List<Student>) {
+    private fun updateBadges(students: List<Student>) {
         for (i in 0 until students.size) {
             val profileView = ProfileView(context!!)
             profileView.setName(students[i].getFirstName())

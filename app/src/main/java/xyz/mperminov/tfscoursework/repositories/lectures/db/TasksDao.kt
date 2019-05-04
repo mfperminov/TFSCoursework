@@ -16,6 +16,9 @@ interface TasksDao {
     @Query("SELECT * FROM tasks WHERE lecturesId=:id")
     fun getHomeworkByLectureId(id: Int): Single<List<Task>>
 
+    @Query("SELECT * FROM tasks")
+    fun getAllTasks(): Single<List<Task>>
+
     @Query("DELETE FROM tasks")
     fun deleteAll(): Completable
 }

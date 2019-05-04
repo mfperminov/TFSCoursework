@@ -52,7 +52,7 @@ class LecturesRepository @Inject constructor(
                         task.id,
                         task.mark,
                         task.status,
-                        task.task
+                        task.taskDetails
                     )
                 )
             }

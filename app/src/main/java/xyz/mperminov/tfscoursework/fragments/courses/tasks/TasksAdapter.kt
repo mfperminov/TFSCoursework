@@ -32,14 +32,14 @@ class TasksAdapter : RecyclerView.Adapter<TasksAdapter.TaskViewHolder>() {
 
     class TaskViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         fun bind(item: Task) = with(itemView) {
-            task_title.text = item.task.title
-            marks.text = String.format(MARKS_TEMPLATE, item.mark, item.task.max_score)
-            if (item.task.deadline_date != null)
+            task_title.text = item.taskDetails.title
+            marks.text = String.format(MARKS_TEMPLATE, item.mark, item.taskDetails.max_score)
+            if (item.taskDetails.deadline_date != null)
             //TODO время
                 deadline.text = String.format(
                     DEADLINE_TEMPLATE,
                     itemView.context.getString(R.string.send_before),
-                    item.task.deadline_date!!.take(CHARS_FOR_DATE)
+                    item.taskDetails.deadline_date!!.take(CHARS_FOR_DATE)
                 )
             if (item.status == "accepted") {
                 task_state.text = itemView.context.getString(R.string.passed)
