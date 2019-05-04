@@ -76,4 +76,5 @@
     <string name="activities_count">Все %d</string>
     <string name="no_past_events">Прошедших мероприятий не найдено</string>
     <string name="more_info">Подробнее</string>
+    <string name="sign_of_overall_rating">Значок общего рейтинга</string>
 </resources>

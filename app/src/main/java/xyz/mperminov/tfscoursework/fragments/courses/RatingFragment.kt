@@ -16,11 +16,15 @@ import xyz.mperminov.tfscoursework.fragments.courses.lectures.LecturesFragment
 
 class RatingFragment : Fragment() {
     private lateinit var viewModel: RatingViewModel
+    private lateinit var progressViewModel: ProgressViewModel
+
     private var childFragmentsAdder: ChildFragmentsAdder? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         (activity?.application as TFSCourseWorkApp).initLecturesComponent()
         viewModel = ViewModelProviders.of(this).get(RatingViewModel::class.java)
+        progressViewModel = ViewModelProviders.of(this).get(ProgressViewModel::class.java)
         if (savedInstanceState == null) {
+            progressViewModel.getUserProgress()
             viewModel.getTestsRating()
             viewModel.getHomeworkRating()
         }
@@ -41,11 +45,28 @@ class RatingFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        setupViewModels()
+        header_layout.setOnClickListener { childFragmentsAdder?.addChildOnTop(LecturesFragment.newInstance()) }
+        super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun setupViewModels() {
         viewModel.testLiveData.observe(this, Observer { testRating -> updateTestInfo(testRating) })
         viewModel.homeworkLiveData.observe(this, Observer { homeworkRating -> updateHomeworkInfo(homeworkRating) })
         viewModel.lecturesCount.observe(this, Observer { count -> updateLecturesCount(count) })
-        header_layout.setOnClickListener { childFragmentsAdder?.addChildOnTop(LecturesFragment.newInstance()) }
-        super.onViewCreated(view, savedInstanceState)
+        progressViewModel.userRating.observe(this, Observer { userRating -> updateUserRating(userRating) })
+        progressViewModel.userMark.observe(this, Observer { mark -> updateUserMark(mark) })
+    }
+
+    private fun updateUserMark(mark: Int?) {
+        if (mark != null)
+            points.text = mark.toString()
+    }
+
+    private fun updateUserRating(userRating: ratingOverall?) {
+        if (userRating != null) {
+            common_rating.text = "${userRating.first}/${userRating.second}"
+        }
     }
 
     private fun updateLecturesCount(count: Int?) {
