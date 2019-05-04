@@ -14,6 +14,8 @@ data class Student(@PrimaryKey val id: Int, val name: String, val mark: Double) 
         return name.split("\\s".toRegex(), 2)
     }
 
+    fun getFirstName(): String = name.split("\\s".toRegex(), 2)[1]
+
     fun getInitials(): String {
         return collectLastNameAndName().reduceIndexed { i, acc, s -> acc.take(i).plus(s[0]).capitalize() }
     }

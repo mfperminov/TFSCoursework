@@ -70,46 +70,6 @@
                 android:layout_marginBottom="16dp"
                 android:orientation="horizontal">
 
-                <xyz.mperminov.tfscoursework.utils.views.ProfileView
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_margin="8dp"
-                    app:badge="8"
-                    app:profile_color="@color/colorBottomNavigationInactive"
-                    app:profile_name="Михаил" />
-
-                <xyz.mperminov.tfscoursework.utils.views.ProfileView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:badge="3"
-                    app:border_on="true"
-                    app:profile_color="@color/color_tab_activity"
-                    app:profile_name="Вы" />
-
-                <xyz.mperminov.tfscoursework.utils.views.ProfileView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:badge="0"
-                    app:profile_color="@color/color_course_done"
-                    app:profile_name="Иван" />
-
-
-                <xyz.mperminov.tfscoursework.utils.views.ProfileView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:profile_color="@color/color_tab_profile"
-                    app:profile_name="Юрий" />
-
-                <xyz.mperminov.tfscoursework.utils.views.ProfileView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="8dp"
-                    app:profile_color="@color/colorAccent"
-                    app:profile_name="Иннокентий" />
-
             </LinearLayout>
         </HorizontalScrollView>
     </androidx.constraintlayout.widget.ConstraintLayout>
