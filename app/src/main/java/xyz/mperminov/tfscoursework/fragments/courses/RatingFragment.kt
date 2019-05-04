@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -17,7 +18,6 @@ import xyz.mperminov.tfscoursework.fragments.courses.lectures.LecturesFragment
 class RatingFragment : Fragment() {
     private lateinit var viewModel: RatingViewModel
     private lateinit var progressViewModel: ProgressViewModel
-
     private var childFragmentsAdder: ChildFragmentsAdder? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         (activity?.application as TFSCourseWorkApp).initLecturesComponent()
@@ -59,29 +59,51 @@ class RatingFragment : Fragment() {
     }
 
     private fun updateUserMark(mark: Int?) {
-        if (mark != null)
+        if (mark != null) {
             points.text = mark.toString()
+            points.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in))
+        }
     }
 
     private fun updateUserRating(userRating: ratingOverall?) {
         if (userRating != null) {
             common_rating.text = "${userRating.first}/${userRating.second}"
+            common_rating.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in))
         }
     }
 
     private fun updateLecturesCount(count: Int?) {
-        if (count != null)
+        if (count != null) {
             total_classes.text = getString(R.string.classes_count, count)
+            total_classes.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in))
+        }
     }
 
     private fun updateHomeworkInfo(homeworkRating: ratingOverall?) {
-        if (homeworkRating != null)
+        if (homeworkRating != null) {
             homework_rating.text = "${homeworkRating.first}/${homeworkRating.second}"
+            homework_rating.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in))
+        }
     }
 
     private fun updateTestInfo(testRating: ratingOverall?) {
-        if (testRating != null)
+        if (testRating != null) {
             tests_rating.text = "${testRating.first}/${testRating.second}"
+            tests_rating.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in))
+        }
+    }
+
+    override fun onStop() {
+        stopAllAnimation()
+        super.onStop()
+    }
+
+    private fun stopAllAnimation() {
+        points.clearAnimation()
+        common_rating.clearAnimation()
+        total_classes.clearAnimation()
+        homework_rating.clearAnimation()
+        tests_rating.clearAnimation()
     }
 
     override fun onDetach() {

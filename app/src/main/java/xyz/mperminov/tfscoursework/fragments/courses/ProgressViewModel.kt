@@ -1,5 +1,6 @@
 package xyz.mperminov.tfscoursework.fragments.courses
 
+import android.os.Handler
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -22,6 +23,7 @@ class ProgressViewModel : BaseViewModel() {
     val userRating: MutableLiveData<ratingOverall> = MutableLiveData()
     val userMark: MutableLiveData<Int> = MutableLiveData()
     private var user = User.NOBODY
+    private val handler = Handler { msg -> topStudents.value = msg.obj as Result<Student>; true }
 
     init {
         TFSCourseWorkApp.studentComponent.inject(this)
@@ -29,6 +31,7 @@ class ProgressViewModel : BaseViewModel() {
 
     fun getTopStudents(size: Long) {
         val d = studentsRepository.getStudents()
+            .doOnSubscribe { handler.sendMessage(handler.obtainMessage(1, Result.Loading<Student>())) }
             .subscribeOn(Schedulers.computation())
             .flattenAsObservable { it }
             .sorted { s1, s2 -> (s2.mark - s1.mark).toInt() }

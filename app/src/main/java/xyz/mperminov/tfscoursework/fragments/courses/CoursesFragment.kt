@@ -40,11 +40,6 @@ class CoursesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.courses))
         viewModel.courseinfo.observe(this, Observer { it -> updateUi(it) })
-        swipe_layout.setOnRefreshListener {
-            val progressFragment = childFragmentManager.findFragmentById(R.id.progress_fragment) as? ProgressFragment
-            progressFragment?.apply { updateBadges() }
-            swipe_layout.isRefreshing = false
-        }
     }
 
     private fun updateUi(response: CourseResponse?) {

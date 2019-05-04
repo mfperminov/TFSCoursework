@@ -16,13 +16,13 @@ import xyz.mperminov.tfscoursework.fragments.activitites.archive.Result
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.students.StudentsFragment
 import xyz.mperminov.tfscoursework.repositories.students.db.Student
+import xyz.mperminov.tfscoursework.utils.toast
 import xyz.mperminov.tfscoursework.utils.views.ProfileView
 
 class ProgressFragment : Fragment(), BadgeUpdateCallback {
     private lateinit var viewModel: ProgressViewModel
     private val topSize: Long = 10
     private var childFragmentsAdder: ChildFragmentsAdder? = null
-
     override fun onAttach(context: Context) {
         if (context is ChildFragmentsAdder) childFragmentsAdder = context
         super.onAttach(context)
@@ -53,11 +53,29 @@ class ProgressFragment : Fragment(), BadgeUpdateCallback {
         viewModel.topStudents.observe(this, Observer { result ->
             when (result) {
                 is Result.Success<Student> -> updateBadges(result.data)
+                is Result.Error<Student> -> showError(result.e!!)
+                is Result.Empty<Student> -> showEmptyState()
+                is Result.Loading<Student> -> showProgress()
             }
         })
     }
 
+    private fun showProgress() {
+        top_students_progress.visibility = View.VISIBLE
+    }
+
+    private fun showEmptyState() {
+        top_students_progress.visibility = View.GONE
+        context?.toast(getString(R.string.rating_no_students))
+    }
+
+    private fun showError(e: Throwable) {
+        top_students_progress.visibility = View.GONE
+        context?.toast(e.localizedMessage)
+    }
+
     private fun updateBadges(students: List<Student>) {
+        top_students_progress.visibility = View.GONE
         for (i in 0 until students.size) {
             val profileView = ProfileView(context!!)
             profileView.setName(students[i].getFirstName())

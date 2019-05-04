@@ -55,8 +55,8 @@ class StudentsAdapter : RecyclerView.Adapter<StudentsAdapter.ViewHolder>() {
                     round_view.setInitials(student.getInitials())
                     name.text = student.name
                     if (position % 2 == 0) round_view.setColor(R.color.colorPrimary) else round_view.setColor(R.color.accent_material_dark)
-                    points.text = context.getString(R.string.points_count, student.mark)
-                    points.text = resources.getPluralsStringForDouble(R.plurals.plurals_marks, student.mark)
+                    points_vh.text = context.getString(R.string.points_count, student.mark)
+                    points_vh.text = resources.getPluralsStringForDouble(R.plurals.plurals_marks, student.mark)
                 }
                 GRID_ITEM -> {
                     with(itemView) {
