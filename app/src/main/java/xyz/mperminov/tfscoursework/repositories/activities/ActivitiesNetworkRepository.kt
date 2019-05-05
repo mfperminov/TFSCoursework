@@ -48,7 +48,9 @@ data class Archive(@PrimaryKey val title: String, val eventType: EventType, val 
     }
 }
 
+@Entity(tableName = "active")
 data class Active(
+    @PrimaryKey
     val title: String,
     val eventType: EventType,
     val place: String,

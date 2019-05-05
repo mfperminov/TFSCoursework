@@ -92,4 +92,5 @@
     <string name="education">Образование</string>
     <string name="work_header">Работа</string>
     <string name="contact_info">Контактная информация</string>
+    <string name="active_activities_label">Текущие</string>
 </resources>

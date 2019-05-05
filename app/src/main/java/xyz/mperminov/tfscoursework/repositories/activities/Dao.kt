@@ -21,3 +21,18 @@ interface ArchiveDao {
     @Query("DELETE FROM archive")
     fun deleteAll(): Completable
 }
+
+@Dao
+interface ActiveDao {
+    @Query("SELECT * FROM active")
+    fun getActive(): Single<List<Active>>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    fun insertAll(lectures: List<Active>): Completable
+
+    @Query("SELECT count(*) FROM active")
+    fun getCount(): Single<Int>
+
+    @Query("DELETE FROM active")
+    fun deleteAll(): Completable
+}
