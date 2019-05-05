@@ -62,6 +62,7 @@ class RatingFragment : Fragment() {
         if (mark != null) {
             points.text = mark.toString()
             points.startAnimation(AnimationUtils.loadAnimation(context, android.R.anim.fade_in))
+            caption_points.text = resources.getQuantityString(R.plurals.plurals_marks_simple, mark)
         }
     }
 

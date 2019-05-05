@@ -63,6 +63,11 @@
         <item quantity="one">%s point</item>
         <item quantity="other">%s points</item>
     </plurals>
+    <plurals name="plurals_marks_simple">
+        <item quantity="zero">points</item>
+        <item quantity="one">point</item>
+        <item quantity="other">points</item>
+    </plurals>
     <string name="you">You</string>
     <string name="student_search">Student search</string>
     <string name="please_correct_email">Please enter correct e-mail</string>
