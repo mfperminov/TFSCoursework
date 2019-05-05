@@ -17,6 +17,6 @@ class LoginRepository @Inject constructor(private val authHolder: AuthHolder) {
 
     fun isTokenValid(): Boolean {
         //Todo more checks (expires?)
-        return authHolder.getToken() != null
+        return authHolder.getToken() != null && authHolder.getToken() != ""
     }
 }

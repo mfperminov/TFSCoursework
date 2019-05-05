@@ -78,4 +78,18 @@
     <string name="more_info">Подробнее</string>
     <string name="sign_of_overall_rating">Значок общего рейтинга</string>
     <string name="rating_no_students">В рейтинге нет студентов</string>
+    <string name="email">Электронная почта</string>
+    <string name="phone">Мобильный телефон</string>
+    <string name="region">Город проживания</string>
+    <string name="school">Школа</string>
+    <string name="school_graduation">Год окончания школы</string>
+    <string name="university">ВУЗ</string>
+    <string name="university_graduation">Год окончания ВУЗа</string>
+    <string name="faculty">Факультет</string>
+    <string name="department">Кафедра</string>
+    <string name="work">Текущее место работы</string>
+    <string name="resume">Резюме</string>
+    <string name="education">Образование</string>
+    <string name="work_header">Работа</string>
+    <string name="contact_info">Контактная информация</string>
 </resources>

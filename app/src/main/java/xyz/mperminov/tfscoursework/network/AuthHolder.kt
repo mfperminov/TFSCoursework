@@ -28,6 +28,10 @@ class AuthHolder @Inject constructor(private val sharedPreferences: SharedPrefer
         return apiLogin.updateToken(AuthRequest(email, password)).observeOn(AndroidSchedulers.mainThread())
             .doOnComplete { saveToken() }
     }
+
+    fun removeToken() {
+        sharedPreferences.edit().putString(AUTH_TOKEN_ARG, "").apply()
+    }
 }
 
 data class AuthRequest(val email: String, val password: String)

@@ -6,10 +6,8 @@ import io.reactivex.Single
 import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 
-
 class SharedPrefUserRepository(private val context: Context) :
     UserRepository {
-
     companion object {
         const val USER_FNAME = "first_name"
         const val USER_LNAME = "last_name"
@@ -21,8 +19,13 @@ class SharedPrefUserRepository(private val context: Context) :
         val lastName = prefs.getString(USER_LNAME, null)
         val firstName = prefs.getString(USER_FNAME, null)
         val patronymic = prefs.getString(USER_PATRONYMIC, null)
-        return if (lastName != null && firstName != null && patronymic != null)
-            Single.just(User(lastName, firstName, patronymic, null))
+        return if (lastName != null && firstName != null)
+            Single.just(
+                User(
+                    lastName, firstName, null, null, "", null, null,
+                    null, null, null, null, null, null, null, null
+                )
+            )
         else Single.just(User.NOBODY)
     }
 

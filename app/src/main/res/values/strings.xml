@@ -79,4 +79,18 @@
     <string name="more_info">More info</string>
     <string name="sign_of_overall_rating">Sign of overall rating</string>
     <string name="rating_no_students">No students in rating</string>
+    <string name="email">E-mail</string>
+    <string name="phone">Phone</string>
+    <string name="region">Region</string>
+    <string name="school">School</string>
+    <string name="school_graduation">School graduation year</string>
+    <string name="university">University</string>
+    <string name="university_graduation">University graduation year</string>
+    <string name="faculty">Faculty</string>
+    <string name="department">Department</string>
+    <string name="work">Current work</string>
+    <string name="resume">Resume</string>
+    <string name="education">Education</string>
+    <string name="work_header">Work</string>
+    <string name="contact_info">Contact info</string>
 </resources>

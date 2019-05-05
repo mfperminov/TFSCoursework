@@ -64,17 +64,7 @@ class EditProfileFragment : BaseChildFragment() {
             && firstNameLayout.error.isNullOrEmpty()
             && patronymicLayout.error.isNullOrEmpty()
         ) {
-
-            repository.saveUser(
-                User(
-                    lastName.text.toString().capitalize(),
-                    firstName.text.toString().capitalize(),
-                    patronymic.text.toString().capitalize(),
-                    null
-                )
-            )
             (activity as ChildFragmentsAdder).recreateParentFragment()
-
         }
     }
 
