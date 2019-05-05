@@ -9,19 +9,14 @@ import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.DialogFragment
 import kotlinx.android.synthetic.main.fragment_edit_profile.*
 import xyz.mperminov.tfscoursework.R
-import xyz.mperminov.tfscoursework.TFSCourseWorkApp
 import xyz.mperminov.tfscoursework.fragments.base.BaseChildFragment
 import xyz.mperminov.tfscoursework.fragments.base.ChildFragmentsAdder
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.models.User
-import xyz.mperminov.tfscoursework.repositories.user.UserRepository
 import xyz.mperminov.tfscoursework.utils.afterTextChanged
 import xyz.mperminov.tfscoursework.utils.validate
-import javax.inject.Inject
 
 class EditProfileFragment : BaseChildFragment() {
-    @Inject
-    lateinit var repository: UserRepository
     private var hasChanges = false
 
     private lateinit var user: User
@@ -35,11 +30,6 @@ class EditProfileFragment : BaseChildFragment() {
             fragment.arguments = args
             return fragment
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        TFSCourseWorkApp.appComponent.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

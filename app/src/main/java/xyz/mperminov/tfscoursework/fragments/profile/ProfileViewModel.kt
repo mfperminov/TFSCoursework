@@ -2,6 +2,7 @@ package xyz.mperminov.tfscoursework.fragments.profile
 
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Handler
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.squareup.picasso.Picasso
@@ -18,8 +19,9 @@ class ProfileViewModel : ViewModel() {
     @Inject
     lateinit var repository: UserNetworkRepository
     private var userDisposable: Disposable? = null
-    val user = MutableLiveData<User>()
+    val user = MutableLiveData<UserResult>()
     val avatar = MutableLiveData<AvatarResult>()
+    private val handler = Handler { msg -> user.value = msg.obj as UserResult; true }
 
     init {
         TFSCourseWorkApp.userComponent.inject(this)
@@ -33,10 +35,12 @@ class ProfileViewModel : ViewModel() {
 
     fun getUser() {
         userDisposable =
-            repository.getUser()
+            repository.getUser().doOnSubscribe { handler.sendMessage(handler.obtainMessage(1, UserResult.Loading())) }
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ user -> this.user.value = user; user.avatar?.let { getUserAvatar(it) } },
-                    { this.user.value = User.NOBODY })
+                .subscribe({ user ->
+                    this.user.value = UserResult.Success(user); user.avatar?.let { getUserAvatar(it) }
+                },
+                    { this.user.value = UserResult.Success(User.NOBODY) })
     }
 
     private fun getUserAvatar(avatarPath: String) {
@@ -56,3 +60,7 @@ class ProfileViewModel : ViewModel() {
 }
 
 class AvatarResult(val bitmap: Bitmap?, val e: Throwable?)
+sealed class UserResult(val user: User?) {
+    class Success(user: User) : UserResult(user)
+    class Loading() : UserResult(null)
+}

@@ -20,13 +20,14 @@ data class User(
     val university_graduation: Int?,
     val department: String?,
     val current_work: String?,
-    val resume: String?
+    val resume: String?,
+    val id: Long
 ) : Parcelable {
     companion object {
         val NOBODY = User(
             "", "", "", "", "",
             "", "", "", 0, "",
-            "", 0, "", "", ""
+            "", 0, "", "", "", 0
         )
     }
 

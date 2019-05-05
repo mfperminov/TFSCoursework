@@ -1,13 +1,10 @@
 package xyz.mperminov.tfscoursework.activities
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import xyz.mperminov.tfscoursework.R
 import xyz.mperminov.tfscoursework.TFSCourseWorkApp
@@ -18,21 +15,12 @@ import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.fragments.courses.CoursesFragment
 import xyz.mperminov.tfscoursework.fragments.profile.ProfileFragment
 import xyz.mperminov.tfscoursework.fragments.students.StudentsFragment
-import xyz.mperminov.tfscoursework.models.User
-import xyz.mperminov.tfscoursework.repositories.user.UserRepository
-import javax.inject.Inject
 
 class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListener, ChildFragmentsAdder,
     ToolbarTitleSetter, StudentsFragment.OnUpSelectedHandler {
-    @Inject
-    lateinit var repository: UserRepository
-
-    private var user: User? = null
-    private var userDisposable: Disposable? = null
     //region Lifecycle
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        TFSCourseWorkApp.appComponent.inject(this)
         (application as TFSCourseWorkApp).initUserComponent()
         setContentView(R.layout.activity_main)
         addItemsToBottomNav()
@@ -67,17 +55,6 @@ class MainActivity : AppCompatActivity(), AHBottomNavigation.OnTabSelectedListen
                 )
             )
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        userDisposable = repository.getUser().observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ user -> this.user = user }, { e -> Log.e(this.javaClass.simpleName, e.localizedMessage) })
-    }
-
-    override fun onStop() {
-        super.onStop()
-        userDisposable?.dispose()
     }
 
     override fun onTabSelected(position: Int, wasSelected: Boolean): Boolean {

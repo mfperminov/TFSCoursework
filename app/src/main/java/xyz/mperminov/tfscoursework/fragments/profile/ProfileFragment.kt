@@ -3,6 +3,7 @@ package xyz.mperminov.tfscoursework.fragments.profile
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +19,7 @@ import xyz.mperminov.tfscoursework.activities.LoginActivity
 import xyz.mperminov.tfscoursework.fragments.base.ToolbarTitleSetter
 import xyz.mperminov.tfscoursework.models.User
 import xyz.mperminov.tfscoursework.network.AuthHolder
+import xyz.mperminov.tfscoursework.repositories.user.prefs.SharedPrefUserRepository
 import xyz.mperminov.tfscoursework.utils.toast
 import javax.inject.Inject
 
@@ -51,18 +53,31 @@ class ProfileFragment : Fragment() {
         (activity as ToolbarTitleSetter).setTitle(getString(R.string.profile))
         btn_logout.setOnClickListener { returnToLogin() }
         setupViewModel()
+        if (savedInstanceState == null)
+            viewModel.getUser()
+        swipe_refresh.setOnRefreshListener { invalidateView(); viewModel.getUser() }
         super.onViewCreated(view, savedInstanceState)
+    }
+
+    private fun invalidateView() {
+        info_container.removeAllViews()
     }
 
     private fun returnToLogin() {
         authHolder.removeToken()
+        PreferenceManager.getDefaultSharedPreferences(context).edit().putString(SharedPrefUserRepository.ARG_USER, null)
+            .apply()
         startActivity(Intent(context, LoginActivity::class.java))
     }
 
     private fun setupViewModel() {
         viewModel = ViewModelProviders.of(this).get(ProfileViewModel::class.java)
-        viewModel.getUser()
-        viewModel.user.observe(this@ProfileFragment, Observer { user -> updateUi(user) })
+        viewModel.user.observe(this@ProfileFragment, Observer { userResult ->
+            when (userResult) {
+                is UserResult.Success -> updateUi(userResult.user!!)
+                is UserResult.Loading -> swipe_refresh.isRefreshing = true
+            }
+        })
         viewModel.avatar.observe(
             this@ProfileFragment,
             Observer { avatarImage ->
@@ -85,6 +100,7 @@ class ProfileFragment : Fragment() {
         } else {
             showError(getString(R.string.error_no_info))
         }
+        swipe_refresh.isRefreshing = false
     }
 
     private fun inflateInfo(user: User) {
