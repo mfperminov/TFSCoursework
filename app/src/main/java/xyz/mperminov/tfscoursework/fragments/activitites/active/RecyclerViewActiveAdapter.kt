@@ -30,6 +30,9 @@ class RecyclerViewActiveAdapter : RecyclerView.Adapter<RecyclerViewActiveAdapter
         fun bind(item: Active) {
             itemView.active_title.text = item.title
             itemView.active_date.text = SDF.format(item.dateStart)
+            itemView.active_label.text = itemView.context.getString(item.eventType.stringResid)
+            itemView.active_label.setBackgroundResource(item.eventType.colorResId)
+
         }
     }
 

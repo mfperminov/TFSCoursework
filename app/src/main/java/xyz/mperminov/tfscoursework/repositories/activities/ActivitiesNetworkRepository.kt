@@ -63,12 +63,12 @@ data class Active(
     }
 }
 
-enum class EventType(val stringResid: Int, val imgResId: Int) {
-    DEFAULT(R.string.activity, R.drawable.ic_default_sign),
-    SCHOOLKIDS(R.string.schoolchildren, R.drawable.ic_school_sign),
-    INTERNSHIP(R.string.internship, R.drawable.ic_intern_sign),
-    SPECIAL_COURSE(R.string.spec_course, R.drawable.ic_spec_sign),
-    FINTECH(R.string.fintech, R.drawable.ic_fintech_sign)
+enum class EventType(val stringResid: Int, val imgResId: Int, val colorResId: Int) {
+    DEFAULT(R.string.activity, R.drawable.ic_default_sign, R.color.event_type_default),
+    SCHOOLKIDS(R.string.schoolchildren, R.drawable.ic_school_sign, R.color.event_type_school),
+    INTERNSHIP(R.string.internship, R.drawable.ic_intern_sign, R.color.event_type_intern),
+    SPECIAL_COURSE(R.string.spec_course, R.drawable.ic_spec_sign, R.color.event_type_course),
+    FINTECH(R.string.fintech, R.drawable.ic_fintech_sign, R.color.event_type_fintech)
 }
 
 class ActivitiesMapper {

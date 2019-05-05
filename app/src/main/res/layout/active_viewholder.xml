@@ -36,6 +36,7 @@
         android:fontFamily="sans-serif-medium"
         android:lineSpacingExtra="4sp"
         android:textColor="#333333"
+        android:ellipsize="end"
         android:textSize="12sp"
         android:textStyle="normal"
         app:layout_constraintStart_toStartOf="parent"
@@ -51,11 +52,12 @@
         android:fontFamily="sans-serif-medium"
         android:letterSpacing="-0.02"
         android:textColor="#ffffff"
+        android:background="#6cd6a2"
         android:textSize="10sp"
         android:textStyle="normal"
         app:layout_constraintBottom_toTopOf="@+id/active_date"
         app:layout_constraintStart_toStartOf="parent"
-        tools:background="#6cd6a2"
+        android:padding="2dp"
         tools:text="СПЕЦКУРС" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

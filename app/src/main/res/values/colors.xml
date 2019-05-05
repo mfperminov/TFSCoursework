@@ -10,4 +10,9 @@
     <color name="color_profile_selection">#FFDD2D</color>
     <color name="color_item_decoration">#FF3F</color>
     <color name="login_back">#3e4757</color>
+    <color name="event_type_course">#6cd6a2</color>
+    <color name="event_type_school">#b1a5ee</color>
+    <color name="event_type_fintech">#f79696</color>
+    <color name="event_type_intern">#ffb191</color>
+    <color name="event_type_default">#72c2ff</color>
 </resources>
